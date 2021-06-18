@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {View,Alert,Text,TextInput,ScrollView,Button, StatusBar,
-  Image,StyleSheet,TouchableOpacity, Dimensions, ActivityIndicator, KeyboardAvoidingView, Keyboard, TouchableWithoutFeedback} from 'react-native';
+  Image,StyleSheet,TouchableOpacity, Dimensions, ActivityIndicator, KeyboardAvoidingView, Keyboard, TouchableWithoutFeedback, Platform} from 'react-native';
 import {createPost} from '../../../../services/auth_curd'
 import colors from '../../../../res/colors';
 import {launchImageLibrary} from 'react-native-image-picker';
@@ -167,7 +167,7 @@ export default function AddPostScreen({navigation}) {
 
     return (
       <>
-  <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : null} keyboardVerticalOffset={127} style={{flex:1,backgroundColor:'black'}}>
+  <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "padding"} keyboardVerticalOffset={Platform.OS === 'ios' ? 127 : 0} style={{flex:1,backgroundColor:'black'}}>
   <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
   <View>
   <View>
@@ -187,7 +187,7 @@ export default function AddPostScreen({navigation}) {
  
     
 <View style={{flexDirection:'row',marginTop:-10,height:20,alignContent:'center',justifyContent:'center', marginBottom:'2%'}}>
-      <View style={{ flex:0.26,backgroundColor:'white',borderRadius:3, }}>
+      <View style={{ flex:0.26,backgroundColor:'white',borderRadius:3, height:20 }}>
           <RNPickerSelect 
             items={[
               {
@@ -201,11 +201,14 @@ export default function AddPostScreen({navigation}) {
               paddingStart:5,
               color: 'black',
             }, inputAndroid: {
-              fontSize: 16,
+              fontSize: 14,
               paddingStart:5,
+              paddingTop:0,
+              marginBottom:-10,
               color: 'black',
             }}}
             onValueChange={(value) => console.log(value)}
+            useNativeAndroidPickerStyle={false}
         />
         </View>
         <View style={{ flex:0.3,backgroundColor:'white',marginLeft:10,borderRadius:3, }}>
@@ -224,6 +227,8 @@ export default function AddPostScreen({navigation}) {
             }, inputAndroid: {
               fontSize: 16,
               paddingStart:5,
+              paddingTop:0,
+              marginBottom:-10,
               color: 'black',
             }}}
             onValueChange={(value) => console.log(value)}
@@ -273,7 +278,8 @@ export default function AddPostScreen({navigation}) {
   </View>
   <View style={{
     backgroundColor:"gray",
-    bottom:35,
+    bottom:Platform.OS === 'ios' ? 35 : 0,
+
     position:'absolute',
     width:"100%"
   }}> 
