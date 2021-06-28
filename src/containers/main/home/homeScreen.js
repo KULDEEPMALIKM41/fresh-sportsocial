@@ -74,19 +74,21 @@ export default function homeScreen({navigation}) {
 
   React.useEffect(() => {
     checkAuth();
+    console.log(page,'-----------------')
     getPostData();
-    const unsubscribe = navigation.addListener('focus', (e) => {
-      checkAuth();
-      setData(firstData);
-      setLoading(true);
-      if (page == 1){
-        getPostData();
-      }else{
-        setPage(1);
-      }
-  });
+  //   const unsubscribe = navigation.addListener('focus', (e) => {
+  //     checkAuth();
+  //     setData(firstData);
+  //     setLoading(true);
+  //     if (page == 1){
+  //       getPostData();
+  //     }else{
+  //       setPage(1);
+  //     }
+  // }
+  // );
   
-    return unsubscribe;
+  //   return unsubscribe;
   }, [navigation, page]);
 
   const loadMoreData = () => {

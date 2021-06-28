@@ -9,6 +9,8 @@ export const VERIFY_OTP_URL = BASEURL.concat("api/auth/OTP_verify_new");
 export const RESET_PASSWORD_URL = BASEURL.concat("api/auth/reset-password/new");
 export const GET_POST_URL = BASEURL.concat("api/allpost?page=");
 export const CREATE_POST_URL = BASEURL.concat("api/admin/savepost");
+export const GET_SPORTS_URL = BASEURL.concat("api/sports");
+export const GET_LEAGUES_URL = BASEURL.concat("api/leagues/");
 
 export function login(data) {
   return axios.post(LOGIN_URL, data);
@@ -40,4 +42,12 @@ export function getLocation() {
 
 export function getPost(page, access){
   return axios.get(GET_POST_URL+page,{ headers: { Authorization: 'Bearer '.concat(access) } } );
+}
+
+export function getSports(){
+  return axios.get(GET_SPORTS_URL);
+}
+
+export function getLeages(sport_id){
+  return axios.get(GET_LEAGUES_URL + sport_id);
 }

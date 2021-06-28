@@ -6,6 +6,7 @@ import palette from '../../res/palette';
 import colors from '../../res/colors';
 import homeNavigator from './home/homeNavigator';
 import activityNavigator from './activity/activityNavigator';
+import BetingNavigator from './beting/BetingNavigator'
 
 export default function TabNavigator({navigation}) {
   const Tab = createBottomTabNavigator();
@@ -37,8 +38,9 @@ export default function TabNavigator({navigation}) {
             return <Image style={palette.header.image} source={iconName} />;
           },
         })}>
+        <Tab.Screen name="Betting" component={BetingNavigator} />
         <Tab.Screen name="Home" component={homeNavigator} />
-        <Tab.Screen name="Betting" component={activityNavigator} />
+        
         <Tab.Screen name="MyBets" component={activityNavigator} />
         <Tab.Screen name="Menu" component={activityNavigator} />
       </Tab.Navigator>

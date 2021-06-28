@@ -1,4 +1,5 @@
 const images = {
+  sports_background: require('./images/sports-background.png'),
   notfound: require('./images/notfound.png'),
   login: require('./images/login.png'),
   logout: require('./images/logout.png'),
