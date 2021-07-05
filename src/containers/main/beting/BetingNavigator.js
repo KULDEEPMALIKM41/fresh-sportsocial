@@ -17,16 +17,20 @@ export default function BetingNavigator({navigation}) {
   return (
     <Stack.Navigator>
       <Stack.Screen
-        name="Match"
-        component={MatchScreen}
-      />
-      <Stack.Screen
         name="Sports"
         component={SportScreen}
       />
        <Stack.Screen
         name="Leagues"
         component={LeagueScreen}
+      />
+      <Stack.Screen
+        name="Matches"
+        component={MatchScreen}
+      />
+      <Stack.Screen
+        name="Markets"
+        component={MarketScreen}
       />
     </Stack.Navigator>
   );

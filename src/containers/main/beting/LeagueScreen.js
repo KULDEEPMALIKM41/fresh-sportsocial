@@ -49,7 +49,7 @@ export default function LeagueScreen({navigation, route}) {
     const getLeagueData = () => {
       console.log('get leagues...');
       getLeages(item.id).then((response) => {
-        console.log(response.data.data);
+        // console.log(response.data.data);
         setLeagues_data(response.data.data);
       }, (error) => { 
         console.log(error.response);
@@ -57,7 +57,7 @@ export default function LeagueScreen({navigation, route}) {
     }
     const Item = ({item}) => {
       return (
-        <TouchableOpacity onPress={() => navigation.navigate('Leagues')}>
+        <TouchableOpacity onPress={() => navigation.navigate('Matches', {item})}>
         <View style={styles.listItem}>
           {/* <Image source={{uri:item.photo}}  style={{width:60, height:60,}} /> */}
           <View style={{justifyContent:'center'}}>

@@ -3,84 +3,12 @@ import React from 'react';
 import {StyleSheet, Text, View, FlatList, Image, TouchableOpacity, Button } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import images from '../../../res/images';
-// import { getLeages } from '../../../services/auth_curd';
+import { getMatches } from '../../../services/auth_curd'
 
 export default function MatchScreen({navigation, route}) { 
-    // const item = route.params.item
-    const matches = [
-      {
-        "id": 2,
-        "name": "Mamelodi Sundowns vs CR Belouizdad",
-        "status": "FT",
-        "match_date": "2021-04-09",
-        "match_time": "13:00:00",
-        "match_date_time": "2021-04-09 13:00:00",
-        "venue": "",
-        "static_id": 2945727,
-        "fix_id": 3452924,
-        "gid": 3897269,
-        "league_id": 125,
-        "home_team_id": 1044,
-        "away_team_id": 1039,
-        "created_at": "2021-04-28T12:15:02.000000Z",
-        "updated_at": "2021-04-28T12:15:02.000000Z",
-        "is_active": "1"
-      },
-      {
-        "id": 3,
-        "name": "Mazembe vs Al-Hilal Omdurman",
-        "status": "FT",
-        "match_date": "2021-04-09",
-        "match_time": "13:00:00",
-        "match_date_time": "2021-04-09 13:00:00",
-        "venue": "",
-        "static_id": 2945726,
-        "fix_id": 3452923,
-        "gid": 3897270,
-        "league_id": 125,
-        "home_team_id": 1045,
-        "away_team_id": 1038,
-        "created_at": "2021-04-28T12:15:02.000000Z",
-        "updated_at": "2021-04-28T12:15:02.000000Z",
-        "is_active": "1"
-      },
-      {
-        "id": 4,
-        "name": "Al Ahly vs Simba",
-        "status": "19:00",
-        "match_date": "2021-04-09",
-        "match_time": "19:00:00",
-        "match_date_time": "2021-04-09 19:00:00",
-        "venue": "",
-        "static_id": 2945724,
-        "fix_id": 3452921,
-        "gid": 3837887,
-        "league_id": 125,
-        "home_team_id": 1041,
-        "away_team_id": 1674,
-        "created_at": "2021-04-28T12:15:02.000000Z",
-        "updated_at": "2021-04-28T12:15:02.000000Z",
-        "is_active": "1"
-      },
-      {
-        "id": 6,
-        "name": "AS Vita Club vs Al-Merreikh",
-        "status": "19:00",
-        "match_date": "2021-04-09",
-        "match_time": "19:00:00",
-        "match_date_time": "2021-04-09 19:00:00",
-        "venue": "",
-        "static_id": 2945725,
-        "fix_id": 3452922,
-        "gid": 3837883,
-        "league_id": 125,
-        "home_team_id": 1040,
-        "away_team_id": 1675,
-        "created_at": "2021-04-28T12:15:02.000000Z",
-        "updated_at": "2021-04-28T12:15:02.000000Z",
-        "is_active": "1"
-      }
-    ];
+    const item = route.params.item
+    // console.log(item)
+    const matches = [];
 
     const [matches_data, setMatches_data] = React.useState(matches)
     React.useLayoutEffect(() => {
@@ -95,10 +23,11 @@ export default function MatchScreen({navigation, route}) {
           </TouchableOpacity>
         ),
         headerTitle: () => (
-            <Text style={styles.headerTitleStyle}>
-            {/* {item.name} */}
-            NFL
-            </Text>
+          <View style={{flexShrink: 1, width:200}}>
+              <Text style={styles.headerTitleStyle}>
+              {item.name}
+              </Text>
+          </View>
         ),
         headerRight: () => (
           <View style={{flexDirection:"row"}}>
@@ -115,30 +44,85 @@ export default function MatchScreen({navigation, route}) {
     }, [navigation]);
 
     React.useEffect(() => {
-    //   getMatchData()
+      getMatchData()
     },[]);
 
-    // const getMatchData = () => {
-    //   console.log('get matches...');
-    //   getLeages(item.id).then((response) => {
-    //     console.log(response.data.data);
-    //     setMatches_data(response.data.data);
-    //   }, (error) => { 
-    //     console.log(error.response);
-    //    });
-    // }
+    const getMatchData = () => {
+      console.log('get matches...');
+      getMatches(item.id).then((response) => {
+        console.log(response.data.matches);
+        setMatches_data(response.data.matches);
+      }, (error) => { 
+        console.log(error.response);
+       });
+    }
+    const months = {
+      1:'Jan',
+      2:'Feb',
+      3:'March',
+      4: 'April',
+      5:'May',
+      6:'June',
+      7:'July',
+      8:'Aug',
+      9:'Sept',
+      10:'Oct',
+      11:'Nov',
+      12:'Dec'
+    };
+    const getTime = (dates, times) => {
+      let hourstr = '';
+      let datestr = months[parseInt(dates.substr(5, 2), 10)] + ' ' + dates.substr(8, 2);
+      let hourint = parseInt(times.substr(0, 2), 10);
+      if(hourint == 0){
+        hourstr = '12:'+ times.substr(3, 2) + ' AM';
+      }else if(hourint > 12){
+        hourstr = hourint - 12;
+        if(hourstr < 10){
+          hourstr = '0' + hourstr + ':' + times.substr(3, 2) + ' PM';
+        }else{
+          hourstr = hourstr + ':' + times.substr(3, 2) + ' PM';
+        }
+      }else{
+        if(hourint < 10){
+          // console.log(hourint);
+          hourstr = '0' + hourint + ':' + times.substr(3, 2) + ' AM';
+        }else{
+          hourstr = hourint + ':' + times.substr(3, 2) + ' AM';
+        }
+      }
+      let timestr = datestr + ' - ' +  hourstr;
+      return timestr;
+    }
+
     const Item = ({item}) => {
       return (
-        <TouchableOpacity onPress={() => navigation.navigate('Sports')}>
+        <TouchableOpacity onPress={() => navigation.navigate('Markets')}>
         <View style={styles.listItem}>
-          {/* <Image source={{uri:item.photo}}  style={{width:60, height:60,}} /> */}
-          <View style={{justifyContent:'center'}}>
-            <View style={styles.matchesIcon}>
-            <Icon name="futbol" size={45} color="darkblue" />
+          <View style={{flex:1,flexDirection:'row', padding:10,}}>
+            {/* <Image source={{uri:item.photo}}  style={{width:60, height:60,}} /> */}
+            <View style={{flex:1, justifyContent:'center', alignItems:'center'}}>
+              <View>
+              <Icon name="futbol" size={45} color="darkblue" />
+              </View>
+            </View>
+            <View style={styles.matchesNameContainer}>
+              <Text style={styles.matchesTextStyle}>{item.name}</Text>
+            </View>
+            <View style={{flex:1, justifyContent:'center', alignItems:'center'}}>
+              <View>
+                <Icon name="futbol" size={45} color="darkblue" />
+              </View>
             </View>
           </View>
-          <View style={styles.matchesNameContainer}>
-            <Text style={styles.matchesTextStyle}>{item.name}</Text>
+          <View style={{height:1, backgroundColor:'lightgray'}}></View>
+          <View style={{paddingHorizontal:10, paddingVertical:2,flexDirection:'row',}}>
+            <View style={{flex:1, alignItems:'flex-start'}}>
+              <Text style={{fontFamily:"BigShouldersText-Black", color:'gray', fontSize:12}}>{getTime(item.match_date, item.match_time)}</Text>
+            </View>
+            <View style={{flex:1, alignItems:'flex-end'}}>
+              <Text style={{fontFamily:"BigShouldersText-Black", color:'gray', fontSize:12}}>MNT Bank Stadium</Text>
+            </View>
           </View>
         </View>
         </TouchableOpacity>
@@ -147,11 +131,21 @@ export default function MatchScreen({navigation, route}) {
 
     return (
         <View style={styles.container}>
-            <View style={{backgroundColor:'rgba(1,41,93, 0.8)'}} >
-                <Text style={styles.matchTitle}> Matches </Text>
+            <View style={{backgroundColor:'rgba(1,41,93, 0.8)', flexDirection:'row'}} >
+              <View style={{flex:2, alignItems:'center', margin:10}}>
+                <Text style={styles.matchTitle}> FAVORITE GAMES </Text>
+              </View>
+              <View style={{flex:1.5, alignItems:'center', margin:10}}>
+                <View style={{borderWidth:.2, borderColor:'white', backgroundColor:'rgba(1,41,50, 0.5)', borderRadius:50}}>
+                  <Text style={[styles.matchTitle,{color:'white'}]}> TOP GAMES </Text>
+                </View>
+              </View>
+              <View style={{flex:1.5, alignItems:'center', margin:10}}>
+                <Text style={styles.matchTitle}> ALL GAMES </Text>
+              </View>
             </View>
             <FlatList
-            style={{flex:1, marginTop:60}}
+            style={{flex:1, marginTop:10}}
             data={matches_data}
             renderItem={({ item }) => <Item item={item}/>}
             keyExtractor={item => item.id}
@@ -163,22 +157,18 @@ export default function MatchScreen({navigation, route}) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white'
+    backgroundColor: 'lightgray'
   },
   listItem:{
-    margin:10,
-    padding:10,
+    marginBottom:10,
     backgroundColor:"#FFF",
-    width:"90%",
-    flex:1,
+    width:"100%",
     alignSelf:"center",
-    flexDirection:"row",
-    borderRadius:20,
   },
   headerTitleStyle:{
     color: 'white',
     fontSize: 19,
-    letterSpacing:1,
+    // letterSpacing:1,
     textAlign:'left',
     fontFamily:"BigShouldersText-Black",
     marginLeft:-15,
@@ -207,17 +197,11 @@ const styles = StyleSheet.create({
     fontFamily:'BigShouldersText-Black',
     marginTop:-5
   },
-  matchesIcon:{
-    backgroundColor:"#eaeef2",
-    padding:15,
-    borderRadius:50,
-    height:75,
-    width:75,
-  },
   matchesNameContainer:{
+    flex:4,
     flexShrink: 1,
-    alignItems:'flex-start',
-    paddingStart:15,
+    alignItems:'center',
+    // paddingStart:15,
     // paddingRight:15,
     justifyContent:'center'
   },
@@ -226,13 +210,14 @@ const styles = StyleSheet.create({
     margin:10,
     letterSpacing:.5,
     fontFamily:"BigShouldersText-Black",
-    color:'gray',
+    // color:'gray',
   },
   matchTitle:{
-    color:'white',
-    padding:10,
-    margin:10,
-    fontSize:14,
+    color:'lightgray',
+    // padding:10,
+    marginHorizontal:13,
+    marginVertical:4,
+    fontSize:12,
     fontFamily:"BigShouldersText-Black",
     letterSpacing:.5,
   },
