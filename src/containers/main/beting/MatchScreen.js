@@ -97,7 +97,7 @@ export default function MatchScreen({navigation, route}) {
 
     const Item = ({item}) => {
       return (
-        <TouchableOpacity onPress={() => navigation.navigate('Markets')}>
+        <TouchableOpacity onPress={() => navigation.navigate('Markets', {item})}>
         <View style={styles.listItem}>
           <View style={{flex:1,flexDirection:'row', padding:10,}}>
             {/* <Image source={{uri:item.photo}}  style={{width:60, height:60,}} /> */}

@@ -4,6 +4,7 @@ import SportScreen from './SportScreen';
 import LeagueScreen from './LeagueScreen';
 import MarketScreen from './MarketScreen';
 import MatchScreen from './MatchScreen';
+import OddsScreen from './OddsScreen';
 
 export default function BetingNavigator({navigation}) {
   React.useEffect(() => {
@@ -31,6 +32,10 @@ export default function BetingNavigator({navigation}) {
       <Stack.Screen
         name="Markets"
         component={MarketScreen}
+      />
+      <Stack.Screen
+        name="Odds"
+        component={OddsScreen}
       />
     </Stack.Navigator>
   );

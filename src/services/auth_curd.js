@@ -12,6 +12,7 @@ export const CREATE_POST_URL = BASEURL.concat("api/admin/savepost");
 export const GET_SPORTS_URL = BASEURL.concat("api/sports");
 export const GET_LEAGUES_URL = BASEURL.concat("api/leagues/");
 export const GET_MATCHES_URL = BASEURL.concat("api/matches/");
+export const GET_ODDS_URL = BASEURL.concat("api/matche/odds/");
 
 export function login(data) {
   return axios.post(LOGIN_URL, data);
@@ -57,4 +58,9 @@ export function getLeages(sport_id){
 export function getMatches(league_id){
   console.log(GET_MATCHES_URL + league_id)
   return axios.get(GET_MATCHES_URL + league_id);
+}
+
+export function getOdds(match_id){
+  console.log(GET_ODDS_URL + match_id)
+  return axios.get(GET_ODDS_URL + match_id);
 }

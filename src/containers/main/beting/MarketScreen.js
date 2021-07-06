@@ -1,32 +1,124 @@
 
   
 import React from 'react';
-import { StyleSheet, Text, View, FlatList, Image, TouchableOpacity,ScrollView} from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableOpacity,ScrollView} from 'react-native';
 import { Dimensions } from 'react-native';
-//import { Col, Row, Grid } from "react-native-easy-grid";
-
+import images from '../../../res/images';
+import Icon from 'react-native-vector-icons/FontAwesome5';
+import { getOdds } from '../../../services/auth_curd';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
-export default class MarketScreen extends React.Component {
-  state = {
-    data:[
-        {
-            "name": "leagues",
-            "photo": "https://freepngimg.com/thumb/football/36660-9-american-football-ball-thumb.png"
-        },  
-    ]
+export default function MatchScreen({navigation, route}) {
+  const item = route.params.item
+  // console.log(item)
+  const [odds_data, setOdds_data] = React.useState(false)
+  const months = {
+    1:'Jan',
+    2:'Feb',
+    3:'March',
+    4: 'April',
+    5:'May',
+    6:'June',
+    7:'July',
+    8:'Aug',
+    9:'Sept',
+    10:'Oct',
+    11:'Nov',
+    12:'Dec'
+  };
+
+  const getTime = (dates, times) => {
+    let hourstr = '';
+    let datestr = months[parseInt(dates.substr(5, 2), 10)] + ' ' + dates.substr(8, 2);
+    let hourint = parseInt(times.substr(0, 2), 10);
+    if(hourint == 0){
+      hourstr = '12:'+ times.substr(3, 2) + ' AM';
+    }else if(hourint > 12){
+      hourstr = hourint - 12;
+      if(hourstr < 10){
+        hourstr = '0' + hourstr + ':' + times.substr(3, 2) + ' PM';
+      }else{
+        hourstr = hourstr + ':' + times.substr(3, 2) + ' PM';
+      }
+    }else{
+      if(hourint < 10){
+        // console.log(hourint);
+        hourstr = '0' + hourint + ':' + times.substr(3, 2) + ' AM';
+      }else{
+        hourstr = hourint + ':' + times.substr(3, 2) + ' AM';
+      }
+    }
+    let timestr = datestr + ' - ' +  hourstr;
+    return timestr;
   }
 
+  React.useLayoutEffect(() => {
+    navigation.setOptions({
+      headerTransparent: false,
+      headerStyle: {
+          backgroundColor: 'rgba(1,41,93, 0.8)'
+        },
+      headerLeft: () => (
+        <TouchableOpacity style={styles.oddsBackButton} onPress={()=> navigation.goBack()}>
+            <Image onPress={()=> navigation.goBack()} source={images.backButton}  style={{width:12, height:12}} />
+        </TouchableOpacity>
+      ),
+      headerTitle: () => (
+        <View style={{flexShrink: 1, width:200}}>
+            <Text style={styles.headerTitleStyle}>
+            Top Games
+            </Text>
+        </View>
+      ), 
+    });
+  }, [navigation]);
 
-render(){
+  React.useEffect(() => {
+    getOddsData()
+  },[]);
+
+  const getOddsData = () => {
+    console.log('get odds...');
+    getOdds(item.id).then((response) => {
+      console.log(response.data.data);
+      setOdds_data(response.data.data);
+    }, (error) => { 
+      console.log(error.response);
+     });
+  }
+
   return (
 
   <View style={styles.container}>
+  { odds_data ?
+  <>
   <ScrollView >
-  <View style={{flex: 1, height:6, backgroundColor: '#e6e6e6'}} />
-   <View style={{flex:1,width:'95%',height:windowHeight*0.11,alignSelf:'center',flexDirection:'row',justifyContent:'space-between',alignSelf:'center'}}>
+  <View style={{flex:1,flexDirection:'row', padding:10, height:100, marginTop:10, backgroundColor:'white'}}>
+    <View style={{flex:1, justifyContent:'center', alignItems:'center'}}>
+      <View>
+      <Icon name="futbol" size={45} color="darkblue" />
+      </View>
+    </View>
+    <View style={styles.matchesNameContainer}>
+      <Text style={styles.matchesTextStyle}>{odds_data.name}</Text>
+    </View>
+    <View style={{flex:1, justifyContent:'center', alignItems:'center'}}>
+      <View>
+        <Icon name="futbol" size={45} color="darkblue" />
+      </View>
+    </View>
+  </View>
+  <View style={{paddingHorizontal:15, height:35,flexDirection:'row',}}>
+    <View style={{flex:1, alignItems:'flex-start', justifyContent:'center'}}>
+      <Text style={{fontFamily:"BigShouldersText-Black", color:'gray', fontSize:12}}>{getTime(item.match_date, item.match_time)}</Text>
+    </View>
+    <View style={{flex:1, alignItems:'flex-end', justifyContent:'center'}}>
+      <Text style={{fontFamily:"BigShouldersText-Black", color:'gray', fontSize:12}}>MNT Bank Stadium</Text>
+    </View>
+  </View>
+   {/* <View style={{flex:1,width:'95%',height:windowHeight*0.11,alignSelf:'center',flexDirection:'row',justifyContent:'space-between',alignSelf:'center'}}>
       <View style={styles.listItem}> 
         <Image source={{uri: "https://freepngimg.com/thumb/football/36660-9-american-football-ball-thumb.png"}}  style={styles.teamlogo} />
         <Text style={styles.team1}>HUE</Text>
@@ -39,24 +131,27 @@ render(){
         <Image source={{uri: "https://freepngimg.com/thumb/football/36660-9-american-football-ball-thumb.png"}}  style={styles.teamlogo} /> 
       </View> 
   </View>
-    <View style={{height:23,backgroundColor:'#e6e6e6',flexDirection:'row'}}>
+    <View style={{height:23,backgroundColor:'#e6e6e6',flexDirection:'row'}}> 
           <Text style={styles.date}>May 18 - 10:00 pm</Text>
           <Text style={styles.place}>MNT Bank Stadium</Text>
     </View>
 
-    <View style={styles.containers}>
-        <View style={{flexDirection:'row',marginTop:windowHeight*0.04}}>
-          <Text style={styles.market}>Market Name</Text>
-        </View>
-        <View style={styles.container2}>
-          <Image source={{uri: "https://picsum.photos/600"}}  style={{ zIndex:1,width:30, height:30,borderColor:'#fff',borderWidth:2,borderRadius:10}} />
-          <Image source={{uri: "https://picsum.photos/200"}}  style={{ width:30, height:30,borderColor:'#fff',borderWidth:2,borderRadius:10,right:15}} />
-           
-            <View style={styles.container3}>
-              <Text style={styles.oddsfonts_light}>+2</Text>
-            </View> 
-        </View>
+    */}
 
+    <View style={styles.containers}>
+      <View style={{flexDirection:'row', flex:1, justifyContent:'space-between', alignItems:'center', marginTop:10}}>
+      <View>
+        <Text style={styles.market}>Market Name</Text>
+      </View>
+      <View style={{flexDirection:'row'}}>
+        <Image source={{uri: "https://picsum.photos/600"}}  style={{ zIndex:1,width:30, height:30,borderColor:'#fff',borderWidth:2,borderRadius:10}} />
+        <Image source={{uri: "https://picsum.photos/200"}}  style={{ width:30, height:30,borderColor:'#fff',borderWidth:2,borderRadius:10,right:15}} />
+          
+          <View style={styles.container3}>
+            <Text style={styles.oddsfonts_light}>+2</Text>
+          </View> 
+      </View>
+      </View>
       <View style={styles.menu}>
         <TouchableOpacity>
           <Text style={{color:'blue',fontFamily:'BigShouldersText-Black',borderBottomWidth:2,borderColor:'blue'}}>ALL</Text>
@@ -68,120 +163,81 @@ render(){
           <Text style={{color:'#666666',fontFamily:'BigShouldersText-Black'}}>TIPSTER</Text>
         </TouchableOpacity>
       </View>
-    <View style={{flex:1,width:'100%'}}>
-        <View style={{flexDirection:'row',justifyContent:'space-between',marginTop:25,height:"auto",paddingRight:15}}> 
-          <View  style={styles.odd_box_blue}>
-            <Text style={styles.oddsfonts_light}>Outcome</Text>
-            <Text style={styles.oddsfonts_light_b}>+300</Text>
-            <Text style={styles.oddsfonts_light}>Bet365</Text>
-        
-          <View style={{flexDirection:'row',marginTop:10,justifyContent:'center',marginBottom:windowHeight*-0.028}}>
-            <Image source={{uri: "https://picsum.photos/600"}}  style={styles.odd_img} />
-            <View style={{width:30, height:30,borderColor:'#fff',borderWidth:2,borderRadius:10,right:10,backgroundColor:'gray',textAlign:'center',justifyContent:'center',alignSelf:'center'}}>
-              <Text style={styles.oddsfonts_light}>+2</Text>
-            </View> 
-          </View>  
-        </View>
-          <View  style={styles.odd_box_white}>
-          <Text style={styles.oddsfonts_dark}>Outcome</Text>
-            <Text style={{justifyContent:'center',alignSelf:'center',color:'black',fontWeight:'bold',}}>+300</Text>
-            <Text style={styles.oddsfonts_dark}>Bet365</Text>
-        
-          <View style={{flexDirection:'row',marginTop:10,justifyContent:'center',marginBottom:windowHeight*-0.028}}>
-            <Image source={{uri: "https://picsum.photos/600"}}  style={styles.odd_img} />
-            <View style={{width:30, height:30,borderColor:'#fff',borderWidth:2,borderRadius:10,right:10,backgroundColor:'gray',textAlign:'center',justifyContent:'center',alignSelf:'center'}}>
-              <Text style={styles.oddsfonts_light}>+2</Text>
-            </View> 
-          </View> 
-          </View>
-        <View  style={styles.odd_box_white}>
-          <Text style={styles.oddsfonts_dark} >Outcome</Text>
-            <Text style={styles.oddsfonts_dark_b}>+300</Text>
-            <Text style={styles.oddsfonts_dark}>Bet365</Text>
-        
-          <View style={{flexDirection:'row',marginTop:10,justifyContent:'center',marginBottom:windowHeight*-0.028}}>
-            <Image source={{uri: "https://picsum.photos/600"}}  style={styles.odd_img} />
-            <View style={{width:30, height:30,borderColor:'#fff',borderWidth:2,borderRadius:10,right:10,backgroundColor:'gray',textAlign:'center',justifyContent:'center',alignSelf:'center'}}>
-              <Text style={styles.oddsfonts_light}>+2</Text>
-            </View> 
-          </View>
-
-        </View>
-      
-      </View>  
-    </View> 
-    <View style={styles.container5}>
-      <View style={{height:40,justifyContent:'center'}}>
-          <Text style={styles.market}>Win - Loss Market</Text>
+      {Object.keys(odds_data.odds_list).length ? 
+        Object.keys(odds_data.odds_list).map(function(keyName, keyIndex) {
+          return (
+            <View key={keyName} style={styles.container5}>
+            <View style={{height:40,justifyContent:'center'}}>
+                <Text style={styles.market}>{keyName}</Text>
+            </View>
+            <View style={{width:'95%',flexDirection:'row',flexWrap:'wrap', justifyContent:'space-around', marginBottom:0}}> 
+            {
+              odds_data.odds_list[keyName].map(function(value, index) {
+                return (
+                  <>
+                  <View key={index}  style={styles.odd_box_white}>
+                    <Text style={styles.oddsfonts_gray}>{value.display_name}</Text>
+                    <Text style={styles.oddsfonts_dark_b}>{value.value}</Text>
+                    <Text style={styles.oddsfonts_blue}>Bet365</Text>
+                
+                  <View style={{flexDirection:'row',marginTop:15,justifyContent:'center',marginBottom:windowHeight*-0.028}}>
+                    <Image source={{uri: "https://picsum.photos/600"}}  style={styles.odd_img} />
+                    <View style={{width:30, height:30,borderColor:'#fff',borderWidth:2,borderRadius:10,right:10,backgroundColor:'gray',textAlign:'center',justifyContent:'center',alignSelf:'center'}}>
+                      <Text style={styles.oddsfonts_light}>+2</Text>
+                    </View> 
+                  </View>  
+                </View>
+                
+                    {/* <View  style={styles.odd_box_blue}>
+                      <Text style={styles.oddsfonts_light}>Outcome</Text>
+                      <Text style={styles.oddsfonts_light_b}>+300</Text>
+                      <Text style={styles.oddsfonts_light_small}>Bet365</Text>
+                  
+                    <View style={{flexDirection:'row',marginTop:15,justifyContent:'center',marginBottom:windowHeight*-0.028}}>
+                      <Image source={{uri: "https://picsum.photos/600"}}  style={styles.odd_img} />
+                      <View style={{width:30, height:30,borderColor:'#fff',borderWidth:2,borderRadius:10,right:10,backgroundColor:'gray',textAlign:'center',justifyContent:'center',alignSelf:'center'}}>
+                        <Text style={styles.oddsfonts_light}>+2</Text>
+                    </View> 
+                    </View> 
+                  </View> */}
+                  </>
+                )
+            })
+            }
+            </View>
+            </View>
+       
+          )
+      })
+      : null}
+      <View style={{marginTop:25}}/>
       </View>
-      <View style={{width:'95%',flexDirection:'row',justifyContent:'space-between'}}> 
-          <View  style={styles.odd_box_white}>
-            <Text style={styles.oddsfonts_dark}>Outcome</Text>
-            <Text style={styles.oddsfonts_dark_b}>+300</Text>
-            <Text style={styles.oddsfonts_dark}>Bet365</Text>
-        
-          <View style={{flexDirection:'row',marginTop:10,justifyContent:'center',marginBottom:windowHeight*-0.028}}>
-            <Image source={{uri: "https://picsum.photos/600"}}  style={styles.odd_img} />
-            <View style={{width:30, height:30,borderColor:'#fff',borderWidth:2,borderRadius:10,right:10,backgroundColor:'gray',textAlign:'center',justifyContent:'center',alignSelf:'center'}}>
-              <Text style={styles.oddsfonts_light}>+2</Text>
-            </View> 
-          </View>  
-        </View>
-          <View  style={styles.odd_box_white}>
-          <Text style={styles.oddsfonts_dark}>Outcome</Text>
-            <Text style={styles.oddsfonts_dark_b}>+300</Text>
-            <Text style={styles.oddsfonts_dark}>Bet365</Text>
-        
-          <View style={{flexDirection:'row',marginTop:10,justifyContent:'center',marginBottom:windowHeight*-0.028}}>
-            <Image source={{uri: "https://picsum.photos/600"}}  style={styles.odd_img} />
-            <View style={{width:30, height:30,borderColor:'#fff',borderWidth:2,borderRadius:10,right:10,backgroundColor:'gray',textAlign:'center',justifyContent:'center',alignSelf:'center'}}>
-              <Text style={styles.oddsfonts_light}>+2</Text>
-            </View> 
-          </View> 
-          </View>
-          <View  style={styles.odd_box_blue}>
-            <Text style={styles.oddsfonts_light}>Outcome</Text>
-            <Text style={styles.oddsfonts_light_b}>+300</Text>
-            <Text style={styles.oddsfonts_light}>Bet365</Text>
-        
-          <View style={{flexDirection:'row',marginTop:10,justifyContent:'center',marginBottom:windowHeight*-0.028}}>
-            <Image source={{uri: "https://picsum.photos/600"}}  style={styles.odd_img} />
-            <View style={{width:30, height:30,borderColor:'#fff',borderWidth:2,borderRadius:10,right:10,backgroundColor:'gray',textAlign:'center',justifyContent:'center',alignSelf:'center'}}>
-              <Text style={styles.oddsfonts_light}>+2</Text>
-          </View> 
-          </View> 
-        </View>
-      </View>  
-    </View>
-   </View>
 
    </ScrollView>
   
-   <TouchableOpacity style={styles.loginContainer} onPress={console.log("hi")}>
-        <Text style={styles.loginText}>Continue</Text>
-      </TouchableOpacity>
-   </View> 
-
+  <TouchableOpacity style={styles.buttonContainer} onPress={() => navigation.navigate('Odds')}>
+    <Text style={styles.buttomButton}>Continue</Text>
+  </TouchableOpacity>
+  </> : null }
+  </View> 
     );
-  }
 }
 
 const styles = StyleSheet.create({
-    loginContainer: {
+  buttonContainer: {
     alignItems: 'center',
-    height: 40,
-    borderTopEndRadius:5,
     backgroundColor: '#5c5cd6',
     justifyContent: 'center',
-    borderTopStartRadius:5
+    paddingVertical:14
   },
-  loginText: {
+  buttomButton: {
     color: '#fff',
     fontFamily:"BigShouldersText-Black",
+    fontSize:20
   },
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: 'lightgray',
      height:'auto',  
   },
   containers: {
@@ -237,18 +293,12 @@ const styles = StyleSheet.create({
     alignSelf:'center'
   },
   market:{
-    justifyContent:'center',
-    alignSelf:'center',
-    alignSelf:'flex-start',
     paddingLeft:5,
-    fontFamily:"BigShouldersText-Black"
+    fontFamily:"BigShouldersText-Black",
+    fontSize:18,
+    color:'black'
   },
-  container2:{
-    textAlign:'right',
-    right:2,position:'absolute',
-    flexDirection:'row',
-    marginTop:20
-  },
+
   container3:{
      width:30,
      height:30,
@@ -266,8 +316,7 @@ const styles = StyleSheet.create({
   {
     flex: 1,
     backgroundColor: '#fff',
-    marginBottom:70,
-    marginTop:10,
+    marginTop:20,
   },
   menu:
   {
@@ -281,8 +330,17 @@ const styles = StyleSheet.create({
   },
   oddsfonts_light:{
     justifyContent:'center',
+    alignSelf:'flex-end',
+    color:'#fff',
+    fontSize:12,
+    marginEnd:2
+  },
+  oddsfonts_light_small:{
+    justifyContent:'center',
     alignSelf:'center',
     color:'#fff',
+    fontSize:12,
+    marginTop:5
   },
   oddsfonts_light_b:
   {
@@ -290,14 +348,24 @@ const styles = StyleSheet.create({
     alignSelf:'center',
     color:'#fff',
     fontWeight:'bold',
+    marginTop:5
   },
-  oddsfonts_dark:
+  oddsfonts_gray:
   {
     justifyContent:'center',
     alignSelf:'center',
     alignItems:'center',
-    color:'black',
-    
+    color:'gray',
+    fontSize:16,
+  },
+  oddsfonts_blue:
+  {
+    justifyContent:'center',
+    alignSelf:'center',
+    alignItems:'center',
+    color:'blue',
+    fontSize:12,
+    marginTop:5
   },
   oddsfonts_dark_b:
   {
@@ -305,6 +373,7 @@ const styles = StyleSheet.create({
     alignSelf:'center',
     color:'black',
     fontWeight:'bold',
+    marginTop:5
   },
   odd_img:
     {
@@ -318,27 +387,59 @@ const styles = StyleSheet.create({
     },
     odd_box_blue:{
       width:'30%',
-       height:90,
-       borderColor:'gray',
-       borderWidth:2,
+       height:110,
+       borderColor:'lightgray',
+       borderWidth:1,
        borderRadius:10,
        backgroundColor:'#5c5cd6',
        textAlign:'center',
        justifyContent:'center',
        alignSelf:'center',
-      
+       marginBottom:25
     },
     odd_box_white:
     {
       width:'30%', 
-      height:90,
-      borderColor:'gray',
-      borderWidth:2,
+      height:110,
+      borderColor:'lightgray',
+      borderWidth:1,
       borderRadius:10,
       backgroundColor:'#fff',
       textAlign:'center',
       justifyContent:'center',
-      alignSelf:'center'
+      alignSelf:'center',
+      marginBottom:25
     },
-
+    oddsBackButton:{
+      backgroundColor:'rgba(1,41,50, 0.5)',
+      padding:6,
+      borderRadius:15,
+      height:25,
+      width:25,
+      marginLeft:10
+    },
+    headerTitleStyle:{
+      color: 'white',
+      fontSize: 19,
+      // letterSpacing:1,
+      textAlign:'left',
+      fontFamily:"BigShouldersText-Black",
+      marginLeft:-15,
+      marginTop:-4
+    },
+    matchesNameContainer:{
+      flex:4,
+      flexShrink: 1,
+      alignItems:'center',
+      // paddingStart:15,
+      // paddingRight:15,
+      justifyContent:'center'
+    },
+    matchesTextStyle:{
+      fontSize:20,
+      margin:10,
+      letterSpacing:.5,
+      fontFamily:"BigShouldersText-Black",
+      // color:'gray',
+    },
 });
