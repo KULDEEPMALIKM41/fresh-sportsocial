@@ -6,6 +6,7 @@ import { Dimensions } from 'react-native';
 import images from '../../../res/images';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { getOdds } from '../../../services/auth_curd';
+import AsyncStorage from '@react-native-community/async-storage';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -13,7 +14,9 @@ const windowHeight = Dimensions.get('window').height;
 export default function MatchScreen({navigation, route}) {
   const item = route.params.item
   // console.log(item)
+  const [selected, setSelected] = React.useState({})
   const [odds_data, setOdds_data] = React.useState(false)
+  const [token, setToken] = React.useState(null)
   const months = {
     1:'Jan',
     2:'Feb',
@@ -28,6 +31,16 @@ export default function MatchScreen({navigation, route}) {
     11:'Nov',
     12:'Dec'
   };
+
+  const checkAuth = async () => {
+    let value = await AsyncStorage.getItem('userData');
+    if (value){
+      value = JSON.parse(value).token
+      setToken(value);
+    }else{
+      setToken(null);
+    }
+  }
 
   const getTime = (dates, times) => {
     let hourstr = '';
@@ -77,16 +90,39 @@ export default function MatchScreen({navigation, route}) {
 
   React.useEffect(() => {
     getOddsData()
+    checkAuth()
   },[]);
 
   const getOddsData = () => {
     console.log('get odds...');
     getOdds(item.id).then((response) => {
-      console.log(response.data.data);
+      // console.log(response.data.data);
       setOdds_data(response.data.data);
     }, (error) => { 
       console.log(error.response);
      });
+  }
+
+  const updateStatus = (keyName, index, selected) => {
+    let temp_selected = {}
+    console.log('hello', selected);
+    let temp_odds_data  = odds_data;
+    temp_odds_data.odds_list[keyName][index]['selected'] = !selected;
+    // setOdds_data(false);
+    setOdds_data({...temp_odds_data});
+    for (let key of Object.keys(temp_odds_data.odds_list)){
+      for (let item of temp_odds_data.odds_list[key]){
+        if (item.selected){
+          if (key in temp_selected){
+            temp_selected[key].push(item)
+          }else{
+            temp_selected[key] = [item]
+          }
+        }
+      }
+    }
+    setSelected({...temp_selected})
+    console.log(temp_selected)
   }
 
   return (
@@ -166,7 +202,7 @@ export default function MatchScreen({navigation, route}) {
       {Object.keys(odds_data.odds_list).length ? 
         Object.keys(odds_data.odds_list).map(function(keyName, keyIndex) {
           return (
-            <View key={keyName} style={styles.container5}>
+            <View key={keyIndex} style={styles.container5}>
             <View style={{height:40,justifyContent:'center'}}>
                 <Text style={styles.market}>{keyName}</Text>
             </View>
@@ -174,11 +210,10 @@ export default function MatchScreen({navigation, route}) {
             {
               odds_data.odds_list[keyName].map(function(value, index) {
                 return (
-                  <>
-                  <View key={index}  style={styles.odd_box_white}>
-                    <Text style={styles.oddsfonts_gray}>{value.display_name}</Text>
-                    <Text style={styles.oddsfonts_dark_b}>{value.value}</Text>
-                    <Text style={styles.oddsfonts_blue}>Bet365</Text>
+                  <TouchableOpacity key={index}  style={value.selected ? styles.odd_box_blue : styles.odd_box_white} onPress={()=> updateStatus(keyName, index, value.selected)}>
+                    <Text style={value.selected ? styles.oddsfonts_light : styles.oddsfonts_gray}>{value.display_name}</Text>
+                    <Text style={value.selected ? styles.oddsfonts_light_b : styles.oddsfonts_dark_b}>{value.value}</Text>
+                    <Text style={value.selected ? styles.oddsfonts_light_small : styles.oddsfonts_blue}>Bet365</Text>
                 
                   <View style={{flexDirection:'row',marginTop:15,justifyContent:'center',marginBottom:windowHeight*-0.028}}>
                     <Image source={{uri: "https://picsum.photos/600"}}  style={styles.odd_img} />
@@ -186,21 +221,7 @@ export default function MatchScreen({navigation, route}) {
                       <Text style={styles.oddsfonts_light}>+2</Text>
                     </View> 
                   </View>  
-                </View>
-                
-                    {/* <View  style={styles.odd_box_blue}>
-                      <Text style={styles.oddsfonts_light}>Outcome</Text>
-                      <Text style={styles.oddsfonts_light_b}>+300</Text>
-                      <Text style={styles.oddsfonts_light_small}>Bet365</Text>
-                  
-                    <View style={{flexDirection:'row',marginTop:15,justifyContent:'center',marginBottom:windowHeight*-0.028}}>
-                      <Image source={{uri: "https://picsum.photos/600"}}  style={styles.odd_img} />
-                      <View style={{width:30, height:30,borderColor:'#fff',borderWidth:2,borderRadius:10,right:10,backgroundColor:'gray',textAlign:'center',justifyContent:'center',alignSelf:'center'}}>
-                        <Text style={styles.oddsfonts_light}>+2</Text>
-                    </View> 
-                    </View> 
-                  </View> */}
-                  </>
+                </TouchableOpacity>
                 )
             })
             }
@@ -214,10 +235,15 @@ export default function MatchScreen({navigation, route}) {
       </View>
 
    </ScrollView>
-  
-  <TouchableOpacity style={styles.buttonContainer} onPress={() => navigation.navigate('Odds')}>
+  {Object.keys(selected).length ? 
+  <TouchableOpacity style={styles.buttonContainer} onPress={() => token ? navigation.navigate('Odds') : navigation.navigate('Login')}>
     <Text style={styles.buttomButton}>Continue</Text>
-  </TouchableOpacity>
+  </TouchableOpacity> :
+  <TouchableOpacity style={styles.disableButtonContainer}>
+  <Text style={styles.disableButtomButton}>Continue</Text>
+</TouchableOpacity>
+  }
+  
   </> : null }
   </View> 
     );
@@ -232,6 +258,18 @@ const styles = StyleSheet.create({
   },
   buttomButton: {
     color: '#fff',
+    fontFamily:"BigShouldersText-Black",
+    fontSize:20
+  },
+  disableButtonContainer: {
+    alignItems: 'center',
+    // backgroundColor: '#5c5cd6',
+    backgroundColor: '#98AFC7',
+    justifyContent: 'center',
+    paddingVertical:14
+  },
+  disableButtomButton: {
+    color: 'lightgray',
     fontFamily:"BigShouldersText-Black",
     fontSize:20
   },
@@ -330,10 +368,10 @@ const styles = StyleSheet.create({
   },
   oddsfonts_light:{
     justifyContent:'center',
-    alignSelf:'flex-end',
+    alignSelf:'center',
+    alignItems:'center',
     color:'#fff',
-    fontSize:12,
-    marginEnd:2
+    fontSize:16,
   },
   oddsfonts_light_small:{
     justifyContent:'center',
