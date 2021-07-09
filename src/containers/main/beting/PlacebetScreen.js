@@ -37,11 +37,26 @@ export default function MarketScreen({navigation, route}) {
       let value = await AsyncStorage.getItem('userData');
       let token = JSON.parse(value).token
       console.log(token);
-      createBet({bet_slips:selected}, token).then((response) => {
-        console.log(response.data.data);
+      let data = {bet_slips:{}};
+      for (let bets of selected){
+        data.bet_slips[bets.id] = {
+          stake_value:bets.stake_value,
+          value:bets.value,
+          id:bets.id
+        }
+      }
+      console.log(data);
+      createBet(data, token).then((response) => {
+        console.log(response.data);
+        Alert.alert('', response.data.message);
       }, (error) => { 
+        Alert.alert('', 'error...')
         console.log(error.response);
+        if (error.response.status == 400){
+          Alert.alert('', error.response.data.message);
+        }
        });
+       
     }else{
       Alert.alert('', 'Please select all point field!')
     }

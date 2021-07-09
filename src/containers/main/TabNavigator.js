@@ -7,6 +7,7 @@ import colors from '../../res/colors';
 import homeNavigator from './home/homeNavigator';
 import activityNavigator from './activity/activityNavigator';
 import BetingNavigator from './beting/BetingNavigator'
+import MyBetsNavigator from './myBets/MyBetsNavigator';
 
 export default function TabNavigator({navigation}) {
   const Tab = createBottomTabNavigator();
@@ -41,7 +42,7 @@ export default function TabNavigator({navigation}) {
         
         <Tab.Screen name="Home" component={homeNavigator} />
         <Tab.Screen name="Betting" component={BetingNavigator} />
-        <Tab.Screen name="MyBets" component={activityNavigator} />
+        <Tab.Screen name="MyBets" component={MyBetsNavigator} />
         <Tab.Screen name="Menu" component={activityNavigator} />
       </Tab.Navigator>
     </React.Fragment>
