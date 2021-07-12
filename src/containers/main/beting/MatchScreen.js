@@ -1,9 +1,15 @@
  
 import React from 'react';
-import {StyleSheet, Text, View, FlatList, Image, TouchableOpacity, Button } from 'react-native';
+import {StyleSheet, Text, View, FlatList, Image, TouchableOpacity, Button ,Dimensions, ActivityIndicator } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import images from '../../../res/images';
-import { getMatches } from '../../../services/auth_curd'
+import { getMatches } from '../../../services/auth_curd';
+import HeaderScreen from './HeaderScreen';
+
+const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
+
+
 
 export default function MatchScreen({navigation, route}) { 
     const item = route.params.item
@@ -23,22 +29,14 @@ export default function MatchScreen({navigation, route}) {
           </TouchableOpacity>
         ),
         headerTitle: () => (
-          <View style={{flexShrink: 1, width:200}}>
+          <View style={{flexShrink: 1, width:windowWidth*0.45}}>
               <Text style={styles.headerTitleStyle}>
               {item.name}
               </Text>
           </View>
         ),
         headerRight: () => (
-          <View style={{flexDirection:"row"}}>
-            <TouchableOpacity style={styles.headerBell}>
-            <Icon name="bell" size={20} color="white" />
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.headerBalanceContainer}>
-            <Text style={styles.balanceTitle}>Balance</Text>
-            <Text style={styles.balanceValue}>$ 2000</Text>
-            </TouchableOpacity>
-          </View>
+          <HeaderScreen navigation={navigation} />
         ) 
       });
     }, [navigation]);
@@ -144,12 +142,20 @@ export default function MatchScreen({navigation, route}) {
                 <Text style={styles.matchTitle}> ALL GAMES </Text>
               </View>
             </View>
-            <FlatList
-            style={{flex:1, marginTop:10}}
-            data={matches_data}
-            renderItem={({ item }) => <Item item={item}/>}
-            keyExtractor={item => item.id}
-            />
+
+            {
+              matches_data.length ? 
+              <FlatList
+              style={{flex:1, marginTop:10}}
+              data={matches_data}
+              renderItem={({ item }) => <Item item={item}/>}
+              keyExtractor={item => item.id}
+              /> : 
+              <View style={{flex:1,flexDirection:'column',justifyContent:'center',alignItems:'center'}}>
+              <ActivityIndicator size="large" color="blue" /> 
+              <Text style={{color:"blue", fontSize:18}}>Loading...</Text>
+             </View>
+           }
         </View>
     );
   }

@@ -1,9 +1,10 @@
  
 import React from 'react';
-import {ImageBackground, StyleSheet, Text, View, FlatList, Image, TouchableOpacity, Button } from 'react-native';
+import {ImageBackground, StyleSheet, Text, View, FlatList, Image, TouchableOpacity, Button, ActivityIndicator } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import images from '../../../res/images';
 import { getLeages } from '../../../services/auth_curd';
+import HeaderScreen from './HeaderScreen';
 
 export default function LeagueScreen({navigation, route}) { 
     const item = route.params.item
@@ -29,15 +30,7 @@ export default function LeagueScreen({navigation, route}) {
           </View>
         ),
         headerRight: () => (
-          <View style={{flexDirection:"row"}}>
-            <TouchableOpacity style={styles.headerBell}>
-            <Icon name="bell" size={20} color="white" />
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.headerBalanceContainer}>
-            <Text style={styles.balanceTitle}>Balance</Text>
-            <Text style={styles.balanceValue}>$ 2000</Text>
-            </TouchableOpacity>
-          </View>
+          <HeaderScreen navigation={navigation} />
         ) 
       });
     }, [navigation]);
@@ -76,7 +69,9 @@ export default function LeagueScreen({navigation, route}) {
     return (
       <ImageBackground source={images.sports_background} style={styles.backgroundStyle} >
       <View style={styles.container}>
-        <FlatList
+        {
+          leagues_data.length ? 
+          <FlatList
           style={{flex:1, marginTop:60}}
           data={leagues_data}
           ListHeaderComponent={() => (
@@ -86,7 +81,12 @@ export default function LeagueScreen({navigation, route}) {
           )}
           renderItem={({ item }) => <Item item={item}/>}
           keyExtractor={item => item.id}
-        />
+        /> : 
+          <View style={{flex:1,flexDirection:'column',justifyContent:'center',alignItems:'center'}}>
+          <ActivityIndicator size="large" color="skyblue" /> 
+          <Text style={{color:"white", fontSize:18}}>Loading...</Text>
+         </View>
+        }
         </View>
       </ImageBackground>
     );

@@ -1,5 +1,4 @@
 import React from 'react';
-import Icon from 'react-native-vector-icons/FontAwesome5';
 import { createBet } from '../../../services/auth_curd';
 import {
   StyleSheet,
@@ -17,6 +16,9 @@ import {
 import {Dimensions} from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
 import AsyncStorage from '@react-native-community/async-storage';
+import HeaderScreen from './HeaderScreen';
+import Icon from 'react-native-vector-icons/FontAwesome5';
+import images from '../../../res/images';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -31,6 +33,30 @@ export default function MarketScreen({navigation, route}) {
     }
     return true;
   }
+
+  React.useLayoutEffect(() => {
+    navigation.setOptions({
+      headerTransparent: false,
+      headerStyle: {
+          backgroundColor: '#5365A2'
+        },
+      headerLeft: () => (
+        <TouchableOpacity style={styles.betslipBackButton} onPress={()=> navigation.goBack()}>
+            <Image onPress={()=> navigation.goBack()} source={images.backButton}  style={{width:12, height:12}} />
+        </TouchableOpacity>
+      ),
+      headerTitle: () => (
+        <View style={{flexShrink: 1, width:200}}>
+            <Text style={styles.headerTitleStyle}>
+           Betslips
+            </Text>
+        </View>
+      ),
+      headerRight: () => (
+        <HeaderScreen navigation={navigation} />
+      ) 
+    });
+  }, [navigation]);
 
   const createBetData = async() => {
     if (checkValidation()){
@@ -49,6 +75,8 @@ export default function MarketScreen({navigation, route}) {
       createBet(data, token).then((response) => {
         console.log(response.data);
         Alert.alert('', response.data.message);
+        navigation.navigate("Sports")
+        navigation.navigate("MyBets")
       }, (error) => { 
         Alert.alert('', 'error...')
         console.log(error.response);
@@ -82,9 +110,10 @@ export default function MarketScreen({navigation, route}) {
                     <Text
                       style={{
                         justifyContent: 'flex-start',
-                        fontWeight: 'bold',
-                        fontSize: 16,
+                        fontSize: 14,
                         padding: 5,
+                        fontFamily:"BigShouldersText-Black",
+                        letterSpacing:.5,
                       }}>
                       {item.odd_type_name}
                     </Text>
@@ -101,21 +130,23 @@ export default function MarketScreen({navigation, route}) {
                       }}
                     />
                   </View>
-                  <View style={{borderBottomColor: 'gray', borderBottomWidth: 1}} />
+                  <View style={{borderBottomColor: 'lightgray', borderBottomWidth:0.5}} />
                   <View>
-                    <View style={{flexDirection: 'row', marginTop:5}}>
+                    <View style={{flexDirection: 'row', marginTop:5,width:'auto'}}>
                       <Text
                         style={{
                           flex:1,
                           justifyContent: 'flex-start',
-                          color: 'blue',
-                          fontSize: 20,
+                          color: '#5365A2',
+                          fontSize: 16,
                           padding: 5,
+                          fontFamily:"BigShouldersText-Black",
+                          letterSpacing:.5,
                         }}>
                         {item.display_name}
                       </Text>
                       <View style={styles.w300}>
-                        <Text style={{color: 'green', fontSize: 20, fontWeight: 'bold',}}>+{item.value}</Text>
+                        <Text style={{color: 'green', fontSize: 16, fontWeight: 'bold',}}>+{item.value}</Text>
                       </View>
                       <View style={styles.Mcontainer}>
                         <RNPickerSelect
@@ -123,8 +154,7 @@ export default function MarketScreen({navigation, route}) {
                             label: 'Select Point',
                             value: '',
                           }}
-                          items={[{label:'10', value:'10'},{label:'20', value:'20'}]}
-                          // value={selectedValue}
+                          items={[{label:'10', value:'10'},{label:'20', value:'20'},{label:'30', value:'30'},{label:'40', value:'40'},{label:'50', value:'50'}]}
                           style={{
                             inputIOS: {
                               fontSize: 16,
@@ -141,7 +171,11 @@ export default function MarketScreen({navigation, route}) {
                             let temp_selected = selected;
                             temp_selected[index]['stake_value'] = itemValue;
                             if (itemValue){
-                              temp_selected[index]['pot_won'] = itemValue * temp_selected[index]['value'];
+                              if(temp_selected[index]['value'] > 0){
+                                temp_selected[index]['pot_won'] = itemValue * (1 + (temp_selected[index]['value']/100));
+                              }else{
+                                temp_selected[index]['pot_won'] = itemValue * (1 - (temp_selected[index]['value']/100));
+                              }
                             }else{
                               temp_selected[index]['pot_won'] = '0'
                             }
@@ -152,79 +186,60 @@ export default function MarketScreen({navigation, route}) {
                       </View>
                     </View>
                     <View style={{flexDirection: 'row', marginTop:10}}>
-                      <View style={{flex:2,flexDirection:'row'}}>
+                      <View style={{flex:2,flexDirection:'column'}}>
+                        <View style={{flex:1,flexDirection:'row',}}>
                         {/* <Image source={{uri:item.photo}}  style={{width:60, height:60,}} /> */}
-                        <View style={{flex:1, justifyContent:'center', alignItems:'center'}}>
-                          <View>
+                        <View style={{marginStart:5}}>
                           <Icon name="futbol" size={20} color="darkblue" />
-                          </View>
                         </View>
                         <View style={styles.matchesNameContainer}>
-                          <Text style={styles.matchesTextStyle}>{item.match_name}</Text>
+                          <Text style={styles.matchesTextStyle}>{
+                          (item.match_name !== undefined) ? item.match_name.split('vs')[0].substring(0,3).toUpperCase() : ''
+                          }
+                          </Text>
+                          <Text style={{color:'#666666',  marginHorizontal:10}}>@</Text>
+                          <Text style={styles.matchesTextStyle}>
+                            {
+                             (item.match_name !== undefined) ? item.match_name.split('vs')[1].substring(0,4).toUpperCase() : ''
+                            }
+                          </Text>
                         </View>
-                        <View style={{flex:1, justifyContent:'center', alignItems:'center'}}>
-                          <View>
-                            <Icon name="futbol" size={20} color="darkblue" />
-                          </View>
+                        <View>
+                          <Icon name="futbol" size={20} color="darkblue" />
                         </View>
                       </View>
-                      {/* <View
-                        style={{
-                          flexDirection: 'row',
-                          justifyContent: 'space-evenly',
-                          width: '50%',
-                          height: 30,
-                        }}>
-                        <Image
-                          source={{
-                            uri: 'https://freepngimg.com/thumb/football/36660-9-american-football-ball-thumb.png',
-                          }}
-                          style={{width: 35, height: 35}}
-                        />
-                        <Text style={{alignSelf: 'center', fontWeight: 'bold'}}>
-                          HUE
-                        </Text>
-                        <Text style={{alignSelf: 'center', color: '#666666'}}>@</Text>
-                        <Text style={{alignSelf: 'center', fontWeight: 'bold'}}>
-                          AHD
-                        </Text>
-                        <Image
-                          source={{
-                            uri: 'https://freepngimg.com/thumb/football/36660-9-american-football-ball-thumb.png',
-                          }}
-                          style={{width: 35, height: 35}}
-                        />
-                      </View> */}
-                      <View style={{flex:1.5}}>
+                      <View style={{flex:1,flexDirection:'row'}}>
+                        <Text style={styles.bettext}>Bet365</Text>
+                      </View>
+                      </View>
+                     
+                      <View style={{flex:0.5, flexDirection:'column',alignItems:'center'}}>
+                      <View style={{flex:1}}>
                       <Text
                         style={{
-                          right: 10,
-                          position: 'absolute',
-                          alignSelf: 'flex-end',
-                          fontSize: 16,
+                          fontSize: 12,
                           color: '#666666',
+                          fontFamily:"BigShouldersText-Black",
                         }}>
-                        Pot. Won
+                        Pot. Win
                       </Text>
                       </View>
-                    </View>
-                    <View style={{flexDirection: 'row', marginTop:5}}>
-                      <Text style={styles.bettext}>Bet365</Text>
-                      <Text
-                        style={{
-                          right: 10,
-                          position: 'absolute',
-                          fontWeight: 'bold',
-                          fontSize: 20,
-                        }}>
-                        ${item.pot_won ? Number(item.pot_won).toFixed(2) : 0}
-                      </Text>
+                        <View style={{flex:1}}>
+                          <Text
+                            style={{
+                              fontFamily:"BigShouldersText-Black",
+                              fontSize: 16,
+                            }}>
+                            $ {item.pot_won ? Number(item.pot_won).toFixed(2) : 0}
+                          </Text>
+                        </View>
+                      </View>
                     </View>
                   </View>
                 </View>
               )
             })}
-            <View style={{marginTop:25, marginBottom: 10, flexDirection: 'row'}}>
+            <View style={{marginTop:25, marginBottom: 10, flexDirection: 'row',paddingLeft:10}}>
             <Text style={styles.headText}>PARLAY</Text>
             <Image
               source={{
@@ -235,23 +250,27 @@ export default function MarketScreen({navigation, route}) {
           </View>
 
           <View
-            style={{height: 60, backgroundColor: '#fff', flexDirection: 'row'}}>
+            style={{height:60, backgroundColor:'#fff', flexDirection: 'row',padding:10,margin:5}}>
             <Text
               style={{
-                paddingLeft: 10,
+                paddingLeft: 20,
                 textAlign: 'left',
                 alignSelf: 'center',
-                fontSize: 18,
+                fontSize: 16,
                 color: '#666666',
+                fontFamily:"BigShouldersText-Black",
+                letterSpacing:.5,
               }}>
               Pot.Win
             </Text>
             <Text
               style={{
                 textAlign: 'left',
-                fontWeight: 'bold',
-                fontSize: 18,
+              
+                fontSize: 16,
                 alignSelf: 'center',
+                fontFamily:"BigShouldersText-Black",
+                letterSpacing:.5,
               }}>
               {' '}
               160 pts
@@ -299,7 +318,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#5c5cd6',
     justifyContent: 'center',
-    paddingVertical:14
+    paddingVertical:10
   },
   buttomButton: {
     color: '#fff',
@@ -315,11 +334,12 @@ const styles = StyleSheet.create({
     fontFamily: 'BigShouldersText-Black',
   },
   boxes: {
-    height: 140,
     backgroundColor: '#fff',
-    marginTop: 20,
     borderTopLeftRadius: 15,
     borderTopEndRadius: 15,
+    padding:5,
+    margin:5,
+    marginTop:15
   },
   Mcontainer: {
     flex:1,
@@ -332,7 +352,6 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     borderColor: '#666666',
     right: 5,
-    // position: 'absolute',
   },
   Lcontainer: {
     backgroundColor: '#fff',
@@ -355,23 +374,43 @@ const styles = StyleSheet.create({
   },
   bettext: {
     textDecorationLine: 'underline',
-    paddingLeft: 10,
+    paddingLeft:5,
     fontSize: 14,
     color: '#666666',
   },
   matchesNameContainer:{
-    flex:4,
     flexShrink: 1,
-    alignItems:'center',
-    // paddingStart:15,
-    // paddingRight:15,
-    justifyContent:'center'
+    flexDirection:'row',
+    justifyContent:'center',
+    marginHorizontal:10
   },
   matchesTextStyle:{
     fontSize:14,
-    // margin:10,
     letterSpacing:.5,
     fontFamily:"BigShouldersText-Black",
-    // color:'gray',
+    alignItems:'center'
+  },
+  headerTitleStyle:{
+    color: 'white',
+    fontSize: 19,
+    letterSpacing:1,
+    textAlign:'left',
+    fontFamily:"BigShouldersText-Black"
+  },
+  betslipBackButton:{
+    backgroundColor:'rgba(1,41,50, 0.5)',
+    padding:6,
+    borderRadius:15,
+    height:25,
+    width:25,
+    marginHorizontal:10
+  },
+  betslipHeaderIcon:{
+    backgroundColor:"#eaeef2",
+    padding:3,
+    borderRadius:15,
+    height:25,
+    width:25,
+    marginRight:10,
   },
 });

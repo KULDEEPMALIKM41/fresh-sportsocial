@@ -1,14 +1,16 @@
  
 import React from 'react';
-import {ImageBackground, StyleSheet, Text, View, FlatList, Image, TouchableOpacity } from 'react-native';
+import {ImageBackground, StyleSheet, Text, View, FlatList, Image, TouchableOpacity, ActivityIndicator } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import images from '../../../res/images';
 import { getSports } from '../../../services/auth_curd';
+import HeaderScreen from './HeaderScreen';
 
 export default function SportScreen({navigation}) { 
     const sports = [];
 
     const [sports_data, setSports_data] = React.useState(sports)
+  
     React.useLayoutEffect(() => {
       navigation.setOptions({
         headerTransparent: true,
@@ -18,18 +20,13 @@ export default function SportScreen({navigation}) {
           </Text>
         ),
         headerRight: () => (
-          <View style={{flexDirection:"row"}}>
-            <TouchableOpacity style={styles.headerBell}>
-            <Icon name="bell" size={20} color="white" />
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.headerBalanceContainer}>
-            <Text style={styles.balanceTitle}>Balance</Text>
-            <Text style={styles.balanceValue}>$ 2000</Text>
-            </TouchableOpacity>
-          </View>
+         <HeaderScreen navigation={navigation} />
         ) 
       });
     }, [navigation]);
+
+
+   
 
     React.useEffect(() => {
       getSportsData()
@@ -43,6 +40,7 @@ export default function SportScreen({navigation}) {
         console.log(error.response);
        });
     }
+
     const Item = ({item}) => {
       return (
         <TouchableOpacity onPress={() => navigation.navigate('Leagues', {item})}>
@@ -62,12 +60,19 @@ export default function SportScreen({navigation}) {
     return (
       <ImageBackground source={images.sports_background} style={styles.backgroundStyle} >
       <View style={styles.container}>
-        <FlatList
+        {
+          sports_data.length ? 
+          <FlatList
           style={{flex:1, marginTop:60}}
           data={sports_data}
           renderItem={({ item }) => <Item item={item}/>}
           keyExtractor={item => item.id}
-        />
+        /> :
+        <View style={{flex:1,flexDirection:'column',justifyContent:'center',alignItems:'center'}}>
+         <ActivityIndicator size="large" color="skyblue" /> 
+         <Text style={{color:"white", fontSize:18}}>Loading...</Text>
+        </View>
+        }
         </View>
       </ImageBackground>
     );
@@ -94,36 +99,6 @@ const styles = StyleSheet.create({
     flexDirection:"row",
     borderRadius:20
   },
-  headerTitleStyle:{
-    color: 'white',
-    fontSize: 19,
-    letterSpacing:1,
-    textAlign:'left',
-    fontFamily:"BigShouldersText-Black"
-  },
-  headerBell:{
-    marginHorizontal:10,
-    paddingTop:6
-  },
-  headerBalanceContainer:{
-    marginHorizontal:10,
-    paddingHorizontal:17,
-    backgroundColor:'white',
-    borderRadius:25
-  },
-  balanceTitle:{
-    fontSize:10,
-    color:'gray',
-    letterSpacing:1,
-    fontFamily:"BigShouldersText-Black",
-    alignSelf:'center'
-  },
-  balanceValue:{
-    fontSize:14,
-    letterSpacing:1,
-    fontFamily:'BigShouldersText-Black',
-    marginTop:-5
-  },
   sportsIcon:{
     backgroundColor:"#eaeef2",
     padding:15,
@@ -142,5 +117,12 @@ const styles = StyleSheet.create({
     letterSpacing:1,
     fontFamily:"BigShouldersText-Black",
     color:'gray'
-  }
+  },
+  headerTitleStyle:{
+    color: 'white',
+    fontSize: 19,
+    letterSpacing:1,
+    textAlign:'left',
+    fontFamily:"BigShouldersText-Black"
+  },
 });

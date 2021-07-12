@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, Image, TouchableOpacity,ScrollView} from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableOpacity,ScrollView,ActivityIndicator} from 'react-native';
 import { Dimensions } from 'react-native';
 import images from '../../../res/images';
 import Icon from 'react-native-vector-icons/FontAwesome5';
@@ -11,7 +11,6 @@ const windowHeight = Dimensions.get('window').height;
 
 export default function MatchScreen({navigation, route}) {
   const item = route.params.item
-  // console.log(item)
   const [selected, setSelected] = React.useState([])
   const [odds_data, setOdds_data] = React.useState(false)
   const [token, setToken] = React.useState(null)
@@ -153,26 +152,6 @@ export default function MatchScreen({navigation, route}) {
       <Text style={{fontFamily:"BigShouldersText-Black", color:'gray', fontSize:12}}>MNT Bank Stadium</Text>
     </View>
   </View>
-   {/* <View style={{flex:1,width:'95%',height:windowHeight*0.11,alignSelf:'center',flexDirection:'row',justifyContent:'space-between',alignSelf:'center'}}>
-      <View style={styles.listItem}> 
-        <Image source={{uri: "https://freepngimg.com/thumb/football/36660-9-american-football-ball-thumb.png"}}  style={styles.teamlogo} />
-        <Text style={styles.team1}>HUE</Text>
-      </View>
-      <View style={{justifyContent:'center',alignSelf:'center'}}>
-        <Text style={styles.team1text}>@</Text>
-      </View>
-      <View style={styles.listItem}>
-        <Text style={styles.team2text}>AHD</Text>
-        <Image source={{uri: "https://freepngimg.com/thumb/football/36660-9-american-football-ball-thumb.png"}}  style={styles.teamlogo} /> 
-      </View> 
-  </View>
-    <View style={{height:23,backgroundColor:'#e6e6e6',flexDirection:'row'}}> 
-          <Text style={styles.date}>May 18 - 10:00 pm</Text>
-          <Text style={styles.place}>MNT Bank Stadium</Text>
-    </View>
-
-    */}
-
     <View style={styles.containers}>
       <View style={{flexDirection:'row', flex:1, justifyContent:'space-between', alignItems:'center', marginTop:10}}>
       <View>
@@ -209,7 +188,7 @@ export default function MatchScreen({navigation, route}) {
               odds_data.odds_list[keyName].map(function(value, index) {
                 return (
                   <TouchableOpacity key={index}  style={value.selected ? styles.odd_box_blue : styles.odd_box_white} onPress={()=> updateStatus(keyName, index, value.selected)}>
-                    <Text style={value.selected ? styles.oddsfonts_light : styles.oddsfonts_gray}>{value.display_name}</Text>
+                    <Text style={value.selected ? value.display_name.length > 10 ? styles.oddsfonts_light_bigger : styles.oddsfonts_light : value.display_name.length > 10 ? styles.oddsfonts_gray_bigger : styles.oddsfonts_gray }>{value.display_name}</Text>
                     <Text style={value.selected ? styles.oddsfonts_light_b : styles.oddsfonts_dark_b}>{value.value}</Text>
                     <Text style={value.selected ? styles.oddsfonts_light_small : styles.oddsfonts_blue}>Bet365</Text>
                   <View style={{flexDirection:'row',marginTop:15,justifyContent:'center',marginBottom:windowHeight*-0.028}}>
@@ -226,10 +205,10 @@ export default function MatchScreen({navigation, route}) {
             </View>
           )
       })
-      : null}
+      : null
+     }
       <View style={{marginTop:25}}/>
       </View>
-
    </ScrollView>
   {selected.length ?
   <TouchableOpacity style={styles.buttonContainer} onPress={() => token ? navigation.navigate('Placebet', {selected}) : navigation.navigate('Login')}>
@@ -239,9 +218,14 @@ export default function MatchScreen({navigation, route}) {
   <Text style={styles.disableButtomButton}>Continue</Text>
 </TouchableOpacity>
   }
-  </> : null }
+  </> :
+  <View style={{flex:1,flexDirection:'column',justifyContent:'center',alignItems:'center'}}>
+    <ActivityIndicator size="large" color="blue" /> 
+    <Text style={{color:"blue", fontSize:18}}>Loading...</Text>
+  </View> 
+    }
   </View>
-    );
+  );
 }
 
 const styles = StyleSheet.create({
@@ -368,6 +352,13 @@ const styles = StyleSheet.create({
     color:'#fff',
     fontSize:16,
   },
+  oddsfonts_light_bigger:{
+    justifyContent:'center',
+    alignSelf:'center',
+    alignItems:'center',
+    color:'#fff',
+    fontSize:10,
+  },
   oddsfonts_light_small:{
     justifyContent:'center',
     alignSelf:'center',
@@ -391,13 +382,21 @@ const styles = StyleSheet.create({
     color:'gray',
     fontSize:16,
   },
+  oddsfonts_gray_bigger:
+  {
+    justifyContent:'center',
+    alignSelf:'center',
+    alignItems:'center',
+    color:'gray',
+    fontSize:10,
+  },
   oddsfonts_blue:
   {
     justifyContent:'center',
     alignSelf:'center',
     alignItems:'center',
     color:'blue',
-    fontSize:12,
+    fontSize:10,
     marginTop:5
   },
   oddsfonts_dark_b:
