@@ -58,11 +58,12 @@ export default function LoginScreen({navigation}) {
         // console.log(value);
         navigation.navigate('Home');
       }, (error) => {
-        if (error.response){
-          Alert.alert('', error.response.data.message);
-        }else{
-          Alert.alert('', 'server in under maintanance');
-        }
+        Alert.alert('', JSON.stringify(error))
+        // if (error.response){
+        //   Alert.alert('', error.response.data.message);
+        // }else{
+        //   Alert.alert('', 'server in under maintanance');
+        // }
       });
     }
   }

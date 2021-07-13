@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {SafeAreaView, FlatList, View, ActivityIndicator, TouchableOpacity, Text, StyleSheet, Image} from 'react-native';
+import {SafeAreaView, FlatList, View, ActivityIndicator, TouchableOpacity, Text, StyleSheet, Image, Alert} from 'react-native';
 import Post from './post/Post';
 import colors from '../../../res/colors';
 import UserContainer from './UserSuggestion/UserContainer';
@@ -69,6 +69,7 @@ export default function homeScreen({navigation}) {
         }
       }, (error) => { 
         console.log(error.response);
+        Alert.alert('', JSON.stringify(error))
        });
   }
 
