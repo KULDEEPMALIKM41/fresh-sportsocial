@@ -1,4 +1,5 @@
 const images = {
+  appIcon:(require('./images/appIcon.png')),
   sports_background: require('./images/sports-background.png'),
   notfound: require('./images/notfound.png'),
   login: require('./images/login.png'),
