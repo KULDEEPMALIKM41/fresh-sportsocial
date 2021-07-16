@@ -1,6 +1,6 @@
  
 import React from 'react';
-import {ImageBackground, StyleSheet, Text, View, FlatList, Image, TouchableOpacity, Button, ActivityIndicator } from 'react-native';
+import {ImageBackground, StyleSheet, Text, View, FlatList, Image, TouchableOpacity, Platform, StatusBar, ActivityIndicator } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import images from '../../../res/images';
 import { getLeages } from '../../../services/auth_curd';
@@ -9,18 +9,19 @@ import HeaderScreen from './HeaderScreen';
 export default function LeagueScreen({navigation, route}) { 
     const item = route.params.item
     const leagues = [];
-
+    const androidStatusBar = 0;
+    const iosStatusBar = StatusBar.currentHeight + 50;
     const [leagues_data, setLeagues_data] = React.useState(leagues)
     React.useLayoutEffect(() => {
       navigation.setOptions({
+        title:'',
+        headerStatusBarHeight: Platform.OS === 'android' ? androidStatusBar : iosStatusBar,
         headerTransparent: true,
         headerLeft: () => (
-          <TouchableOpacity style={styles.leagueBackButton} onPress={()=> navigation.goBack()}>
-              <Image onPress={()=> navigation.goBack()} source={images.backButton}  style={{width:12, height:12}} />
-          </TouchableOpacity>
-        ),
-        headerTitle: () => (
           <View style={{flexDirection:'row'}}>
+            <TouchableOpacity style={styles.leagueBackButton} onPress={()=> navigation.goBack()}>
+              <Image onPress={()=> navigation.goBack()} source={images.backButton}  style={{width:12, height:12}} />
+            </TouchableOpacity>
             <View style={styles.leagueHeaderIcon}>
               <Icon name="futbol" size={19} color="darkblue" />
             </View>
@@ -29,6 +30,16 @@ export default function LeagueScreen({navigation, route}) {
             </Text>
           </View>
         ),
+        // headerTitle: () => (
+        //   <View style={{flexDirection:'row'}}>
+        //     <View style={styles.leagueHeaderIcon}>
+        //       <Icon name="futbol" size={19} color="darkblue" />
+        //     </View>
+        //     <Text style={styles.headerTitleStyle}>
+        //     {item.name}
+        //     </Text>
+        //   </View>
+        // ),
         headerRight: () => (
           <HeaderScreen navigation={navigation} />
         ) 
@@ -72,7 +83,7 @@ export default function LeagueScreen({navigation, route}) {
         {
           leagues_data.length ? 
           <FlatList
-          style={{flex:1, marginTop:60}}
+          style={{flex:1, marginTop:Platform.OS ==='ios' ? 110 : 60}}
           data={leagues_data}
           ListHeaderComponent={() => (
             <View>
@@ -119,7 +130,7 @@ const styles = StyleSheet.create({
     letterSpacing:1,
     textAlign:'left',
     fontFamily:"BigShouldersText-Black",
-    marginTop:-4
+    marginTop: Platform.OS === 'ios' ? 0 : -4
   },
   headerBell:{
     marginHorizontal:10,
@@ -158,6 +169,7 @@ const styles = StyleSheet.create({
     height:25,
     width:25,
     marginRight:10,
+    marginStart:30
   },
   leaguesNameContainer:{
     flexShrink: 1,

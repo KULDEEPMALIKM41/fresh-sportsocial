@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, Image, TouchableOpacity,ScrollView,ActivityIndicator} from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView, ActivityIndicator, Platform, StatusBar} from 'react-native';
 import { Dimensions } from 'react-native';
 import images from '../../../res/images';
 import Icon from 'react-native-vector-icons/FontAwesome5';
@@ -10,6 +10,8 @@ const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
 export default function MatchScreen({navigation, route}) {
+  const androidStatusBar = 0;
+  const iosStatusBar = StatusBar.currentHeight + 50;
   const item = route.params.item
   const [selected, setSelected] = React.useState([])
   const [odds_data, setOdds_data] = React.useState(false)
@@ -67,6 +69,7 @@ export default function MatchScreen({navigation, route}) {
 
   React.useLayoutEffect(() => {
     navigation.setOptions({
+      headerStatusBarHeight: Platform.OS === 'android' ? androidStatusBar : iosStatusBar,
       headerTransparent: false,
       headerStyle: {
           backgroundColor: 'rgba(1,41,93, 0.8)'
@@ -77,7 +80,7 @@ export default function MatchScreen({navigation, route}) {
         </TouchableOpacity>
       ),
       headerTitle: () => (
-        <View style={{flexShrink: 1, width:200}}>
+        <View style={{flexShrink: 1, width:200, marginStart: Platform.OS === 'ios' ? -50 : 0}}>
             <Text style={styles.headerTitleStyle}>
             Top Games
             </Text>

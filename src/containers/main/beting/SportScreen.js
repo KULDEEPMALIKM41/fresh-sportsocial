@@ -1,20 +1,25 @@
  
 import React from 'react';
-import {ImageBackground, StyleSheet, Text, View, FlatList, Image, TouchableOpacity, ActivityIndicator } from 'react-native';
+import {ImageBackground, Dimensions, StyleSheet, Text, View, FlatList, Platform, StatusBar, TouchableOpacity, ActivityIndicator } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import images from '../../../res/images';
 import { getSports } from '../../../services/auth_curd';
 import HeaderScreen from './HeaderScreen';
+const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
 
 export default function SportScreen({navigation}) { 
     const sports = [];
-
+    const androidStatusBar = 0;
+    const iosStatusBar = StatusBar.currentHeight + 50;
     const [sports_data, setSports_data] = React.useState(sports)
   
     React.useLayoutEffect(() => {
       navigation.setOptions({
+        title:'',
+        headerStatusBarHeight: Platform.OS === 'android' ? androidStatusBar : iosStatusBar,
         headerTransparent: true,
-        headerTitle: () => (
+        headerLeft: () => (
           <Text style={styles.headerTitleStyle}>
           Select Sports
           </Text>
@@ -63,7 +68,7 @@ export default function SportScreen({navigation}) {
         {
           sports_data.length ? 
           <FlatList
-          style={{flex:1, marginTop:60}}
+          style={{flex:1, marginTop:Platform.OS ==='ios' ? 110 : 60}}
           data={sports_data}
           renderItem={({ item }) => <Item item={item}/>}
           keyExtractor={item => item.id}
@@ -83,7 +88,7 @@ const styles = StyleSheet.create({
     flex: 1,
     resizeMode: "cover",
     justifyContent: "center",
-    height:800
+    height:windowHeight
   },
   container: {
     flex: 1,
@@ -122,7 +127,7 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 19,
     letterSpacing:1,
-    textAlign:'left',
+    left:15,
     fontFamily:"BigShouldersText-Black"
   },
 });

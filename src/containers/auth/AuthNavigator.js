@@ -24,6 +24,7 @@ export default function AuthNavigator({navigation}) {
         name="Login"
         component={LoginScreen}
         options={{
+          headerStatusBarHeight: Platform.OS === 'android' ? androidStatusBar : iosStatusBar,
           title:'',
           headerTransparent: false,
           headerStyle: {
