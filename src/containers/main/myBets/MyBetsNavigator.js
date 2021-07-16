@@ -23,18 +23,6 @@ export default function MyBetsNavigator({navigation}) {
       <Stack.Screen
         name="MyBets"
         component={MyBetsScreen}
-        options={{
-          //headerTransparent: true,
-          headerTitle: () => (
-            <Text style={{color: 'white', fontWeight: 'bold', fontSize: 17}}>
-              My Bets
-            </Text>
-          ),
-          headerStyle: {
-            backgroundColor: colors.bottomBackGround,
-            shadowColor: colors.seperatorLineColor,
-          },
-        }}
       />
     </Stack.Navigator>
   );

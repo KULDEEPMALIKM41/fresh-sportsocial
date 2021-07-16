@@ -1,5 +1,5 @@
 import React from 'react';
-import {ImageBackground, StyleSheet, Text, View, FlatList, Image, TouchableOpacity } from 'react-native';
+import {ImageBackground, StyleSheet, Text, View, FlatList, Image, TouchableOpacity, Platform } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import AsyncStorage from '@react-native-community/async-storage';
 import { getBalance } from '../../../services/auth_curd';
@@ -86,7 +86,7 @@ const styles = StyleSheet.create({
       fontSize:14,
       letterSpacing:1,
       fontFamily:'BigShouldersText-Black',
-      marginTop:-5
+      marginTop: Platform.OS ==='ios' ? 0 : -5
     },
     LoginButton:{
       fontSize:14,

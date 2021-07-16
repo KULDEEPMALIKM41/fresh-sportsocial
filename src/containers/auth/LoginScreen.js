@@ -9,7 +9,7 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   Dimensions,
-  item
+  Platform
 } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import React from 'react';
@@ -111,7 +111,7 @@ export default function LoginScreen({navigation}) {
       }}
       labelStyles={{
         marginLeft:-5,
-        fontFamily:'serif',
+        fontFamily: Platform.OS === 'ios' ? 'Avenir-Roman' : 'serif',
         letterSpacing:1,
       }}
       inputStyles={{
@@ -151,7 +151,7 @@ export default function LoginScreen({navigation}) {
       }}
       labelStyles={{
         marginLeft:-5,
-        fontFamily:'serif',
+        fontFamily: Platform.OS === 'ios' ? 'Avenir-Roman' : 'serif',
         letterSpacing:1,
       }}
       inputStyles={{

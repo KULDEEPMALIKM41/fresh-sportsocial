@@ -1,5 +1,5 @@
 import React , {useState} from 'react';
-import { StyleSheet,Svg, Text, View, FlatList, Image,Picker, TouchableOpacity,ScrollView,ActivityIndicator} from 'react-native';
+import { StyleSheet, Text, View, Platform, Image, TouchableOpacity, ScrollView, ActivityIndicator, StatusBar} from 'react-native';
 import { Dimensions } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import {getBetslips} from '../../../services/auth_curd';
@@ -10,17 +10,21 @@ const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
 export default function MetchScreen({navigation, route}) { 
+    const androidStatusBar = 0;
+    const iosStatusBar = StatusBar.currentHeight + 50;
     const betslips = [];
     const [selected_button, setSelected_button] = React.useState("ALL")
     const [betslips_data, setBetslips_Data] = React.useState(betslips)
     const [filtered_data, setFiltered_Data] = React.useState(betslips)
     React.useLayoutEffect(() => {
       navigation.setOptions({
+        headerStatusBarHeight: Platform.OS === 'android' ? androidStatusBar : iosStatusBar,
         headerTransparent: false,
+        title:'',
         headerStyle: {
             backgroundColor: '#5365A2'
           },
-        headerTitle: () => (
+        headerLeft: () => (
           <View style={{flexShrink: 1, width:200}}>
               <Text style={styles.headerTitleStyle}>
                  MyBets
@@ -320,7 +324,7 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 19,
     letterSpacing:0.5,
-    textAlign:'left',
+    left:25,
     fontFamily:"BigShouldersText-Black",
   },
   headerBell:{

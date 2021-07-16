@@ -2,15 +2,13 @@ import React from 'react';
 import { createBet } from '../../../services/auth_curd';
 import {
   StyleSheet,
-  Svg,
+  Platform,
   Text,
   View,
-  FlatList,
+  StatusBar,
   Image,
-  Picker,
   TouchableOpacity,
   ScrollView,
-  selectedValue,
   Alert
 } from 'react-native';
 import {Dimensions} from 'react-native';
@@ -24,6 +22,8 @@ const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
 export default function MarketScreen({navigation, route}) {
+  const androidStatusBar = 0;
+  const iosStatusBar = StatusBar.currentHeight + 50;
   const [selected, setSelected] = React.useState(route.params.selected);
   const checkValidation = () => {
     for (let itm of selected){
@@ -36,6 +36,7 @@ export default function MarketScreen({navigation, route}) {
 
   React.useLayoutEffect(() => {
     navigation.setOptions({
+      headerStatusBarHeight: Platform.OS === 'android' ? androidStatusBar : iosStatusBar,
       headerTransparent: false,
       headerStyle: {
           backgroundColor: '#5365A2'
@@ -46,7 +47,7 @@ export default function MarketScreen({navigation, route}) {
         </TouchableOpacity>
       ),
       headerTitle: () => (
-        <View style={{flexShrink: 1, width:200}}>
+        <View style={{flexShrink: 1, width:200, marginStart:Platform.OS === 'ios' ? -50 : 0}}>
             <Text style={styles.headerTitleStyle}>
            Betslips
             </Text>
@@ -106,17 +107,19 @@ export default function MarketScreen({navigation, route}) {
           {selected.map(function(item, index){
               return(
                 <View key={index} style={styles.boxes}>
-                  <View style={{flexDirection: 'row'}}>
-                    <Text
-                      style={{
-                        justifyContent: 'flex-start',
-                        fontSize: 14,
-                        padding: 5,
-                        fontFamily:"BigShouldersText-Black",
-                        letterSpacing:.5,
-                      }}>
-                      {item.odd_type_name}
-                    </Text>
+                  <View style={{flexDirection: 'row', marginBottom:3}}>
+                    <View style={{justifyContent: 'flex-start', alignItems:'flex-start', marginTop:-5, flex:1}}>
+                      <Text
+                        style={{
+                          fontSize: 14,
+                          padding: 5,
+                          fontFamily:"BigShouldersText-Black",
+                          letterSpacing:.5,
+                        }}>
+                        {item.odd_type_name}
+                      </Text>
+                    </View>
+                    <View style={{justifyContent: 'flex-start', alignItems:'flex-end', flex:1}}>
                     <Image
                       source={{
                         uri: 'https://freepngimg.com/thumb/web_design/51042-3-share-hd-free-clipart-hd-thumb.png',
@@ -124,11 +127,12 @@ export default function MarketScreen({navigation, route}) {
                       style={{
                         width: 15,
                         height: 15,
-                        right: 0,
-                        position: 'absolute',
-                        margin: 10,
+                        right: 15,
+                        // position: 'absolute',
+                        // marginBottom: 0,
                       }}
                     />
+                    </View>
                   </View>
                   <View style={{borderBottomColor: 'lightgray', borderBottomWidth:0.5}} />
                   <View>
@@ -158,6 +162,8 @@ export default function MarketScreen({navigation, route}) {
                           style={{
                             inputIOS: {
                               fontSize: 16,
+                              top:3,
+                              alignSelf:'center',
                               color: 'black',
                             },
                             inputAndroid: {
@@ -286,6 +292,8 @@ export default function MarketScreen({navigation, route}) {
                     style={{
                       inputIOS: {
                         fontSize: 16,
+                        // top:3,
+                        alignSelf:'center',
                         color: 'black',
                       },
                       inputAndroid: {
@@ -327,7 +335,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor: '#f2f2f2',
+    backgroundColor: 'lightgray',
   },
   headText: {
     color: 'gray',
@@ -337,7 +345,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderTopLeftRadius: 15,
     borderTopEndRadius: 15,
-    padding:5,
+    padding:10,
     margin:5,
     marginTop:15
   },
@@ -376,6 +384,7 @@ const styles = StyleSheet.create({
     textDecorationLine: 'underline',
     paddingLeft:5,
     fontSize: 14,
+    marginTop: Platform.OS === 'ios' ? 5 : 0,
     color: '#666666',
   },
   matchesNameContainer:{

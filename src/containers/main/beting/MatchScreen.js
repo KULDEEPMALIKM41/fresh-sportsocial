@@ -1,6 +1,6 @@
  
 import React from 'react';
-import {StyleSheet, Text, View, FlatList, Image, TouchableOpacity, Button ,Dimensions, ActivityIndicator } from 'react-native';
+import {StyleSheet, Text, View, FlatList, Image, TouchableOpacity, Platform, StatusBar ,Dimensions, ActivityIndicator } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import images from '../../../res/images';
 import { getMatches } from '../../../services/auth_curd';
@@ -15,11 +15,13 @@ export default function MatchScreen({navigation, route}) {
     const item = route.params.item
     // console.log(item)
     const matches = [];
-
+    const androidStatusBar = 0;
+    const iosStatusBar = StatusBar.currentHeight + 50;
     const [matches_data, setMatches_data] = React.useState(matches)
     React.useLayoutEffect(() => {
       navigation.setOptions({
         headerTransparent: false,
+        headerStatusBarHeight: Platform.OS === 'android' ? androidStatusBar : iosStatusBar,
         headerStyle: {
             backgroundColor: 'rgba(1,41,93, 0.8)'
           },
@@ -29,7 +31,7 @@ export default function MatchScreen({navigation, route}) {
           </TouchableOpacity>
         ),
         headerTitle: () => (
-          <View style={{flexShrink: 1, width:windowWidth*0.45}}>
+          <View style={{flexShrink: 1, width:windowWidth*0.45, marginStart:Platform.OS === 'ios' ? -50 : 0,}}>
               <Text style={styles.headerTitleStyle}>
               {item.name}
               </Text>
@@ -129,7 +131,7 @@ export default function MatchScreen({navigation, route}) {
 
     return (
         <View style={styles.container}>
-            <View style={{backgroundColor:'rgba(1,41,93, 0.8)', flexDirection:'row'}} >
+            <View style={{paddingTop:5, backgroundColor:'rgba(1,41,93, 0.8)', flexDirection:'row'}} >
               <View style={{flex:2, alignItems:'center', margin:10}}>
                 <Text style={styles.matchTitle}> FAVORITE GAMES </Text>
               </View>
