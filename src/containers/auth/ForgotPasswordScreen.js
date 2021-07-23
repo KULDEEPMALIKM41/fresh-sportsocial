@@ -14,6 +14,7 @@ import {
   import images from '../../res/images';
   import colors from '../../res/colors';
   import { sendOtp, verifyOtp, resetPassword } from '../../services/auth_curd';
+  import {FloatingLabelInput} from 'react-native-floating-label-input';
   
   export default function ForgotPasswordScreen({navigation}) {
     const [email, setEmail] = React.useState('');
@@ -167,21 +168,42 @@ import {
       <KeyboardAvoidingView  behavior={Platform.OS === "ios" ? "padding" : null} style={Styles.container}> 
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View>
-        <View style={Styles.logoContainer}>
-        <Image source={images.app_logo} style={{height: 50, width:225}} />
-        </View>
+          <View style={Styles.logoContainer}>
+            <Text style={{color:'#000', fontSize:28, fontFamily:"BigShouldersText-Black",}}>Forgot Password</Text>
+          </View>
         {
           !resetPasswordField ? 
           <>
            <View>
          <View style={Styles.userNameContainer}>
-         <TextInput
-           style={Styles.userNameInput}
-           onChangeText={text=> changeHandler(text, "email")}
-           placeholder="Phone number or email"
-           placeholderTextColor={colors.textFaded2}
-           editable={emailEditable}
-         />
+         <FloatingLabelInput
+            containerStyles={{
+              borderBottomWidth:1,
+              paddingVertical: 15,
+              backgroundColor: '#fff',
+              borderColor: colors.textFaded2 ,
+            }}
+            customLabelStyles={{
+              fontSizeFocused: 14,
+            }}
+            labelStyles={{
+              marginLeft:-5,
+              fontFamily: Platform.OS === 'ios' ? 'Avenir-Roman' : 'serif',
+              letterSpacing:1,
+            }}
+            inputStyles={{
+              color: 'black',
+              padding: 0,
+              margin:0,
+              marginTop:7,
+              fontSize:20,
+              fontFamily:"BigShouldersText-Black",
+              marginBottom:-7
+            }}
+              label={'phone number or email'}
+              value={email}
+              onChangeText={text=> changeHandler(text, "email")}
+            />
        </View>
        {
          emailError ? 
@@ -193,14 +215,34 @@ import {
        {
        otpField ? 
        <View style={Styles.passwordContainer}>
-           <TextInput
-               style={Styles.userNameInput}
-               onChangeText={text=> changeHandler(text, "otp")}
-               placeholder="OTP"
-               maxLength={6}
-               keyboardType='numeric'
-               placeholderTextColor={colors.textFaded2}
-           />
+         <FloatingLabelInput
+            containerStyles={{
+              borderBottomWidth:1,
+              paddingVertical: 15,
+              backgroundColor: '#fff',
+              borderColor: colors.textFaded2 ,
+            }}
+            customLabelStyles={{
+              fontSizeFocused: 14,
+            }}
+            labelStyles={{
+              marginLeft:-5,
+              fontFamily: Platform.OS === 'ios' ? 'Avenir-Roman' : 'serif',
+              letterSpacing:1,
+            }}
+            inputStyles={{
+              color: 'black',
+              padding: 0,
+              margin:0,
+              marginTop:7,
+              fontSize:20,
+              fontFamily:"BigShouldersText-Black",
+              marginBottom:-7
+            }}
+              label={'otp'}
+              value={otp}
+              onChangeText={text=> changeHandler(text, "otp")}
+            />
        </View> :
        null
        }
@@ -224,14 +266,35 @@ import {
         </> :
          <>
          <View style={Styles.userNameContainer}>
-          <TextInput
-            secureTextEntry={true}
-            textContentType='password'
-            style={Styles.userNameInput}
-            onChangeText={text=> changeHandler(text, "npassword")}
-            placeholder="New Password"
-            placeholderTextColor={colors.textFaded2}
-          />
+         <FloatingLabelInput
+            containerStyles={{
+              borderBottomWidth:1,
+              paddingVertical: 15,
+              backgroundColor: '#fff',
+              borderColor: colors.textFaded2 ,
+            }}
+            customLabelStyles={{
+              fontSizeFocused: 14,
+            }}
+            labelStyles={{
+              marginLeft:-5,
+              fontFamily: Platform.OS === 'ios' ? 'Avenir-Roman' : 'serif',
+              letterSpacing:1,
+            }}
+            inputStyles={{
+              color: 'black',
+              padding: 0,
+              margin:0,
+              marginTop:7,
+              fontSize:20,
+              fontFamily:"BigShouldersText-Black",
+              marginBottom:-7
+            }}
+            isPassword
+              label={'new password'}
+              value={newPassword}
+              onChangeText={text=> changeHandler(text, "npassword")}
+            />
         </View>
         {
           newPasswordError ? 
@@ -241,15 +304,35 @@ import {
           null
         }
         <View style={Styles.passwordContainer}>
-          <TextInput
-            secureTextEntry={true}
-            keyboardType='default'
-            textContentType='password'
-            style={Styles.userNameInput}
-            onChangeText={text=> changeHandler(text, "cnpassword")}
-            placeholder="Confirm New Password"
-            placeholderTextColor={colors.textFaded2}
-          />
+        <FloatingLabelInput
+            containerStyles={{
+              borderBottomWidth:1,
+              paddingVertical: 15,
+              backgroundColor: '#fff',
+              borderColor: colors.textFaded2 ,
+            }}
+            customLabelStyles={{
+              fontSizeFocused: 14,
+            }}
+            labelStyles={{
+              marginLeft:-5,
+              fontFamily: Platform.OS === 'ios' ? 'Avenir-Roman' : 'serif',
+              letterSpacing:1,
+            }}
+            inputStyles={{
+              color: 'black',
+              padding: 0,
+              margin:0,
+              marginTop:7,
+              fontSize:20,
+              fontFamily:"BigShouldersText-Black",
+              marginBottom:-7
+            }}
+            isPassword
+              label={'confirm new password'}
+              value={confirmNewPassword}
+              onChangeText={text=> changeHandler(text, "cnpassword")}
+            />
         </View>
         {
           confirmNewPasswordError ? 
@@ -275,50 +358,39 @@ import {
     container: {
       flex: 1,
       justifyContent: 'center',
-      backgroundColor: '#000',
+      backgroundColor: '#fff',
     },
     logoContainer: {
-      alignItems: 'center',
-      justifyContent: 'center',
-      alignContent: 'center',
+      alignItems: 'flex-start',
+      justifyContent: 'flex-start',
+      height:'auto',
+      paddingLeft:38
     },
     userNameContainer: {
-      borderColor: '#262626',
-      backgroundColor: colors.loginInputBackground,
-      borderWidth: 1,
-      borderRadius: 5,
-      height: 40,
       justifyContent: 'center',
-      //alignItems: 'center',
-      marginStart: 20,
-      marginEnd: 20,
-      marginTop: 40,
-      marginBottom: 20,
-    },
+      marginLeft:38,
+      marginEnd: 40,
+      marginBottom:20,
+      marginTop:20,
+      },
     userNameInput: {
       marginStart: 10,
       color: 'white',
     },
     passwordContainer: {
-        borderColor: '#262626',
-        borderWidth: 1,
-        borderRadius: 5,
-        height: 40,
+      justifyContent: 'center',
+      marginStart: 38,
+      marginEnd: 38,
+      marginBottom:20,
+      marginTop:20
+    },
+      errorContainer:{
         justifyContent: 'center',
-        //alignItems: 'center',
-        marginStart: 20,
+        marginTop: -18,
+        marginStart: 40,
         marginEnd: 20,
-        backgroundColor: colors.loginInputBackground,
         marginBottom: 20,
       },
-    errorContainer:{
-      justifyContent: 'center',
-      //alignItems: 'center',
-      marginTop: -15,
-      marginStart: 25,
-      marginEnd: 20,
-      marginBottom: 20,
-    },
     resendContainer:{
         justifyContent: 'center',
         alignItems: 'flex-end',
@@ -328,17 +400,18 @@ import {
         marginBottom: 20,
       },
 
-    loginContainer: {
-      alignItems: 'center',
-      height: 40,
-      marginTop: 30,
-      backgroundColor: '#0088f8',
-      justifyContent: 'center',
-      marginStart: 20,
-      marginEnd: 20,
-      borderRadius: 5,
-    },
-    loginText: {
-      color: '#fff',
-    },
+      loginContainer: {
+        alignItems: 'center',
+        height: 50,
+        margin: 40,
+        backgroundColor: '#5365A2',
+        justifyContent: 'center',
+        borderRadius: 25,
+      },
+      loginText: {
+        color: '#fff',
+        fontSize:18,
+        fontFamily:"BigShouldersText-Black",
+        letterSpacing:1
+      },
   });

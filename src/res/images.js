@@ -1,5 +1,4 @@
 const images = {
-  appIcon:(require('./images/appIcon.png')),
   sports_background: require('./images/sports-background.png'),
   notfound: require('./images/notfound.png'),
   login: require('./images/login.png'),
@@ -39,6 +38,7 @@ const images = {
   grid: require('./images/gridIcon.png'),
   list3: require('./images/list3.png'),
   bets: require('./images/bets.png'),
+  story_loader: require('./images/story_loader.gif'),
 };
 
 

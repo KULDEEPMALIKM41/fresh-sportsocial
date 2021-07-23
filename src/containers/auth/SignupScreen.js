@@ -1,7 +1,7 @@
 import {
     View,
     Text,
-    TextInput,
+    ScrollView,
     TouchableOpacity,
     StyleSheet,
     Image,
@@ -15,8 +15,12 @@ import {
   import colors from '../../res/colors';
   import { signup, getLocation } from '../../services/auth_curd'
   import RNPickerSelect from 'react-native-picker-select';
-  
+  import {FloatingLabelInput} from 'react-native-floating-label-input';
+
   export default function SignupScreen({navigation}) {
+    
+    const [countryHeight, setCountryHeight] = React.useState(40);
+    const [countryMarginTop, setCountryMarginTop] = React.useState(19)
     const [firstName, setFirstName] = React.useState('');
     const [lastName, setLastName] = React.useState('');
     const [phone, setPhone] = React.useState('');
@@ -156,6 +160,13 @@ import {
         setLastName(value);
       }else if (name === 'phone'){
         setPhone(value);
+        if (value.length > 0){
+          setCountryHeight(60);
+          setCountryMarginTop(3);
+        }else{
+          setCountryHeight(40);
+          setCountryMarginTop(19);
+        }
       }else if (name === 'email'){
         setEmail(value);
       }else if (name === 'password'){
@@ -167,25 +178,71 @@ import {
     return (
       <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : null} style={Styles.container}> 
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <ScrollView>
       <View>
           <View style={Styles.logoContainer}>
-          <Image source={images.app_logo} style={{height: 50, width:'66%'}} />
+            <Text style={{color:'#000', fontSize:28, fontFamily:"BigShouldersText-Black",}}> Sign Up with</Text>
+            <Text style={{color:'#5365A2', fontSize:28, fontFamily:"BigShouldersText-Black",}}> SportsSocial</Text>
           </View>
           <View style={{flexDirection: 'row', justifyContent:'space-between' }}>
             <View style={Styles.nameContainer}>
-              <TextInput
-                style={Styles.userNameInput}
-                placeholder="First name"
-                onChangeText={text=>  changeHandler(text, "f_name")}
-                placeholderTextColor={colors.textFaded2}
+            <FloatingLabelInput
+              containerStyles={{
+                borderBottomWidth:1,
+                paddingVertical: 15,
+                backgroundColor: '#fff',
+                borderColor: colors.textFaded2 ,
+              }}
+              customLabelStyles={{
+                fontSizeFocused: 14,
+              }}
+              labelStyles={{
+                marginLeft:-5,
+                fontFamily: Platform.OS === 'ios' ? 'Avenir-Roman' : 'serif',
+                letterSpacing:1,
+              }}
+              inputStyles={{
+                color: 'black',
+                padding: 0,
+                margin:0,
+                marginTop:7,
+                fontSize:20,
+                fontFamily:"BigShouldersText-Black",
+                marginBottom:-7
+              }}
+                label={'first name'}
+                value={firstName}
+                onChangeText={text=> changeHandler(text, "f_name")}
               />
             </View>
             <View style={Styles.nameContainer}>
-              <TextInput
-                style={Styles.userNameInput}
-                placeholder="Last name"
-                onChangeText={text=>  changeHandler(text, "l_name")}
-                placeholderTextColor={colors.textFaded2}
+            <FloatingLabelInput
+              containerStyles={{
+                borderBottomWidth:1,
+                paddingVertical: 15,
+                backgroundColor: '#fff',
+                borderColor: colors.textFaded2 ,
+              }}
+              customLabelStyles={{
+                fontSizeFocused: 14,
+              }}
+              labelStyles={{
+                marginLeft:-5,
+                fontFamily: Platform.OS === 'ios' ? 'Avenir-Roman' : 'serif',
+                letterSpacing:1,
+              }}
+              inputStyles={{
+                color: 'black',
+                padding: 0,
+                margin:0,
+                marginTop:7,
+                fontSize:20,
+                fontFamily:"BigShouldersText-Black",
+                marginBottom:-7
+              }}
+                label={'last name'}
+                value={lastName}
+                onChangeText={text=> changeHandler(text, "l_name")}
               />
             </View>
           </View>
@@ -207,7 +264,7 @@ import {
           </View>
           <View style={Styles.phoneContainer}>
             <View style={{flex:2}}>
-              <View style={Styles.phone1Container}>
+              <View style={{borderColor: 'gray', borderBottomWidth: 1, height: countryHeight, justifyContent: 'center', backgroundColor: 'lightgray', marginTop:countryMarginTop,}}>
               <RNPickerSelect
                     placeholder={{
                       label: 'Country',
@@ -216,14 +273,17 @@ import {
                     items={rnPickerItem}
                     value={selectedValue}
                     style={{inputIOS: {
-                      fontSize: 16,
+                      fontSize: 18,
                       paddingVertical: 12,
                       paddingHorizontal: 10,
-                      color: 'white',
+                      fontFamily:"BigShouldersText-Black",
+                      color: 'black',
                     }, inputAndroid: {
-                      fontSize: 16,
-                      paddingHorizontal: 10,
-                      color: 'white',
+                      fontSize: 18,
+                      // paddingHorizontal: 10,
+                      fontFamily:"BigShouldersText-Black",
+                      paddingStart:7,
+                      color: 'gray',
                     },
                     }}
                     onValueChange={(itemValue, itemIndex) => {
@@ -236,13 +296,36 @@ import {
             </View>
             <View style={{flex:5}}>
               <View style={Styles.phone2Container}>
-                <TextInput
-                  style={Styles.userNameInput}
-                  placeholder="Phone"
+                <FloatingLabelInput
+                containerStyles={{
+                  borderBottomWidth:1,
+                  paddingVertical: 15,
+                  backgroundColor: '#fff',
+                  borderColor: colors.textFaded2 ,
+                }}
+                customLabelStyles={{
+                  fontSizeFocused: 14,
+                }}
+                labelStyles={{
+                  // marginLeft:-5,
+                  fontFamily: Platform.OS === 'ios' ? 'Avenir-Roman' : 'serif',
+                  letterSpacing:1,
+                }}
+                inputStyles={{
+                  color: 'black',
+                  padding: 0,
+                  margin:0,
+                  marginTop:7,
+                  fontSize:20,
+                  fontFamily:"BigShouldersText-Black",
+                  marginBottom:-7,
+                  marginLeft:5
+                }}
+                  label={'phone'}
+                  value={phone}
                   maxLength={10}
                   keyboardType='numeric'
-                  onChangeText={text=>  changeHandler(text, "phone")}
-                  placeholderTextColor={colors.textFaded2}
+                  onChangeText={text=> changeHandler(text, "phone")}
                 />
               </View>
             </View>
@@ -255,11 +338,33 @@ import {
             null
           }
           <View style={Styles.passwordContainer}>
-            <TextInput
-              style={Styles.userNameInput}
-              placeholder="Email"
-              onChangeText={text=>  changeHandler(text, "email")}
-              placeholderTextColor={colors.textFaded2}
+            <FloatingLabelInput
+              containerStyles={{
+                borderBottomWidth:1,
+                paddingVertical: 15,
+                backgroundColor: '#fff',
+                borderColor: colors.textFaded2 ,
+              }}
+              customLabelStyles={{
+                fontSizeFocused: 14,
+              }}
+              labelStyles={{
+                marginLeft:-5,
+                fontFamily: Platform.OS === 'ios' ? 'Avenir-Roman' : 'serif',
+                letterSpacing:1,
+              }}
+              inputStyles={{
+                color: 'black',
+                padding: 0,
+                margin:0,
+                marginTop:7,
+                fontSize:20,
+                fontFamily:"BigShouldersText-Black",
+                marginBottom:-7
+              }}
+                label={'email'}
+                value={email}
+                onChangeText={text=> changeHandler(text, "email")}
             />
           </View>
           {
@@ -270,12 +375,35 @@ import {
             null
           }
           <View style={Styles.passwordContainer}>
-            <TextInput
-              secureTextEntry={true}
-              style={Styles.passwordInput}
-              placeholder="Password"
+          <FloatingLabelInput
+            containerStyles={{
+              borderBottomWidth:1,
+              paddingVertical: 15,
+              backgroundColor: '#fff',
+              borderColor: colors.textFaded2 , 
+            }}
+            isPassword
+            customLabelStyles={{
+              fontSizeFocused: 14,
+            }}
+            labelStyles={{
+              marginLeft:-5,
+              fontFamily: Platform.OS === 'ios' ? 'Avenir-Roman' : 'serif',
+              letterSpacing:1,
+            }}
+            inputStyles={{
+              color: 'black',
+              padding: 0,
+              margin:0,
+              marginTop:3,
+              fontSize:20,
+              letterSpacing:1,
+              fontFamily:"BigShouldersText-Black",
+              marginBottom:-15
+            }}
+              label={'password'}
+              value={password}
               onChangeText={text=>  changeHandler(text, "password")}
-              placeholderTextColor={colors.textFaded2}
             />
           </View>
           {
@@ -299,6 +427,7 @@ import {
             <View style={{flex: 1, height: 1}}></View>
           </View>
       </View>
+      </ScrollView>
       </TouchableWithoutFeedback>
       </KeyboardAvoidingView>
 
@@ -310,52 +439,32 @@ import {
     container: {
       flex: 1,
       justifyContent: 'center',
-      backgroundColor: '#000',
+      backgroundColor: '#fff',
     },
     logoContainer: {
-      //paddingTop:100,
-      alignItems: 'center',
-      justifyContent: 'center',
-      alignContent: 'center',
+      marginTop:25,
+      flexDirection:'row',
+      alignItems: 'flex-start',
+      justifyContent: 'flex-start',
+      height:'auto',
+      paddingLeft:25
     },
     nameContainer: {
-      borderColor: '#262626',
-      backgroundColor: colors.loginInputBackground,
-      borderWidth: 1,
-      borderRadius: 5,
-      height: 40,
       justifyContent:"center",
-      marginStart: 20,
-      marginEnd: 20,
-      marginTop: 40,
-      marginBottom: 20,
-      flex:1
-    },
-    userNameContainer: {
-      borderColor: '#262626',
-      backgroundColor: colors.loginInputBackground,
-      borderWidth: 1,
-      borderRadius: 5,
-      height: 40,
-      marginStart: 20,
-      marginEnd: 20,
+      marginLeft:38,
+      marginEnd: 40,
       marginTop: 20,
       marginBottom: 20,
+      flex:1
     },
     userNameInput: {
       marginStart: 10,
       color: 'white',
     },
     passwordContainer: {
-      borderColor: '#262626',
-      borderWidth: 1,
-      borderRadius: 5,
-      height: 40,
       justifyContent: 'center',
-      //alignItems: 'center',
-      marginStart: 20,
-      marginEnd: 20,
-      backgroundColor: colors.loginInputBackground,
+      marginLeft:38,
+      marginEnd: 40,
       marginBottom: 20,
     },
     passwordInput: {marginStart: 10, color: 'white'},
@@ -367,51 +476,38 @@ import {
       color: '#0088f8',
     },
     loginContainer: {
-    
       alignItems: 'center',
-      height: 40,
-      marginTop: 30,
-      backgroundColor: '#0088f8',
+      height: 50,
+      margin: 40,
+      backgroundColor: '#5365A2',
       justifyContent: 'center',
-      marginStart: 20,
-      marginEnd: 20,
-      borderRadius: 5,
+      borderRadius: 25,
     },
     loginText: {
       color: '#fff',
+      fontSize:18,
+      fontFamily:"BigShouldersText-Black",
+      letterSpacing:1
     },
     errorContainer:{
       justifyContent: 'center',
       //alignItems: 'center',
       marginTop: -15,
-      marginStart: 25,
+      marginStart: 38,
       marginEnd: 20,
       marginBottom: 20,
     },
     phoneContainer: {
-      flexDirection:'row'
-    },
-    phone1Container: {
-      borderColor: '#262626',
-      borderWidth: 1,
-      borderRadius: 5,
-      height: 40,
-      justifyContent: 'center',
-      //alignItems: 'center',
-      marginStart:20,
-      backgroundColor: 'black',
+      flexDirection:'row',
+      marginLeft:38,
+      marginEnd: 40,
+      // marginTop: 20,
       marginBottom: 20,
     },
     phone2Container: {
-      borderColor: '#262626',
-      borderWidth: 1,
-      borderRadius: 5,
-      height: 40,
       justifyContent: 'center',
-      //alignItems: 'center',
-      marginStart:-5,
-      marginEnd: 20,
-      backgroundColor: colors.loginInputBackground,
-      marginBottom: 20,
+      // marginStart:-5,
+      // marginEnd: 20,
+      // marginTop: 10,
     },
   });

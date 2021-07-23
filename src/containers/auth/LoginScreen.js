@@ -125,7 +125,6 @@ export default function LoginScreen({navigation}) {
       }}
         label={'phone number or email'}
         value={email}
-        inputstyle={{color:'red'}}
         onChangeText={text=> changeHandler(text, "email")}
       />
       </View>
@@ -220,7 +219,6 @@ const Styles = StyleSheet.create({
     paddingLeft:25
   },
   userNameContainer: {
-    // height: 40,
     justifyContent: 'center', 
     marginLeft:38,
     marginEnd: 40,
@@ -235,13 +233,9 @@ const Styles = StyleSheet.create({
     marginBottom: 20,
   },
   passwordContainer: {
-    borderColor: colors.textFaded2,
-    borderBottomWidth: 1,
-    // height: 40,
     justifyContent: 'center',
     marginStart: 38,
     marginEnd: 38,
-    backgroundColor: '#fff',
     marginBottom:20,
     marginTop:20
   },

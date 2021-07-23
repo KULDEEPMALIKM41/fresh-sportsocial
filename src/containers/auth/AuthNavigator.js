@@ -13,7 +13,7 @@ import ForgotPasswordScreen from './ForgotPasswordScreen';
 
 StatusBar.setBarStyle('light-content');
 
-export default function AuthNavigator({navigation}) {
+export default function AuthNavigator() {
   const androidStatusBar = 0;
   const iosStatusBar = StatusBar.currentHeight + 50;
 
@@ -23,7 +23,7 @@ export default function AuthNavigator({navigation}) {
       <Stack.Screen
         name="Login"
         component={LoginScreen}
-        options={{
+        options={({navigation}) => ({
           headerStatusBarHeight: Platform.OS === 'android' ? androidStatusBar : iosStatusBar,
           title:'',
           headerTransparent: false,
@@ -40,27 +40,51 @@ export default function AuthNavigator({navigation}) {
                 <Image onPress={()=> navigation.goBack()} source={images.appIcon}  style={{width:30, height:30}} />
             </TouchableOpacity>
           ), 
-        }}
+        })}
       />
       <Stack.Screen
         name="Signup"
         component={SignupScreen}
-        options={{
+        options={({navigation}) => ({
           headerStatusBarHeight: Platform.OS === 'android' ? androidStatusBar : iosStatusBar,
-          headerStyle: {backgroundColor: '#000'},
-          headerTintColor: '#fff',
-          title: '',
-        }}
+          title:'',
+          headerTransparent: false,
+          headerStyle: {
+              backgroundColor: '#5365A2'
+            },
+          headerLeft: () => (
+            <TouchableOpacity style={styles.authBackButton} onPress={()=> navigation.goBack()}>
+                <Image onPress={()=> navigation.goBack()} source={images.backButton}  style={{width:12, height:12}} />
+            </TouchableOpacity>
+          ), 
+          headerRight: () => (
+            <TouchableOpacity style={{right:25}}>
+                <Image onPress={()=> navigation.goBack()} source={images.appIcon}  style={{width:30, height:30}} />
+            </TouchableOpacity>
+          ), 
+        })}
       />
       <Stack.Screen
         name="ForgotPassword"
         component={ForgotPasswordScreen}
-        options={{
+        options={({navigation}) => ({
           headerStatusBarHeight: Platform.OS === 'android' ? androidStatusBar : iosStatusBar,
-          headerStyle: {backgroundColor: '#000'},
-          headerTintColor: '#fff',
-          title: '',
-        }}
+          title:'',
+          headerTransparent: false,
+          headerStyle: {
+              backgroundColor: '#5365A2'
+            },
+          headerLeft: () => (
+            <TouchableOpacity style={styles.authBackButton} onPress={()=> navigation.goBack()}>
+                <Image onPress={()=> navigation.goBack()} source={images.backButton}  style={{width:12, height:12}} />
+            </TouchableOpacity>
+          ), 
+          headerRight: () => (
+            <TouchableOpacity style={{right:25}}>
+                <Image onPress={()=> navigation.goBack()} source={images.appIcon}  style={{width:30, height:30}} />
+            </TouchableOpacity>
+          ), 
+        })}
       />
     </Stack.Navigator>
   );
