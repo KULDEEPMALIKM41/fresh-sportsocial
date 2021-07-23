@@ -6,6 +6,8 @@ import CommentScreen from './Comments/CommentScreen';
 import LoadingScreen from './Loading/LoadingScreen';
 import AddPostScreen from './AddPost/AddPostScreen';
 import AsyncStorage from '@react-native-community/async-storage';
+import HeaderScreen from '../beting/HeaderScreen';
+
 import {
   View,
   StyleSheet,
@@ -60,88 +62,87 @@ export default function ({navigation}) {
         component={homeScreen}
         options={({navigation}) => ({
           headerStatusBarHeight: Platform.OS === 'android' ? androidStatusBar : iosStatusBar,
+          title:'',
           headerStyle: {
-            backgroundColor: colors.bottomBackGround,
+            backgroundColor: '#5365A2',
             shadowColor: colors.seperatorLineColor,
-            //marginTop:100,
           },
           headerLeft: () => (
-            <View onPress={() => navigation.navigate('PostCamera')}>
-              <TouchableOpacity
-                style={Styles.headerLeftContainer}
-                onPress={() => navigation.navigate('PostCamera')}>
+            <View>
                 <Image
-                  onPress={() => navigation.navigate('PostCamera')}
-                  source={images.add}
-                  style={Styles.headerLeftImage}
+                  source={images.app_logo}
+                  style={{width: 150,
+                    height: 30,
+                    resizeMode: 'contain'}}
                 />
-              </TouchableOpacity>
             </View>
           ),
           headerRight: () => (
-            <>
-              { Auth ?
-              <TouchableOpacity
-              style={Styles.headerRightContainer}
-              onPress={() => Logout()}>
-              <Image
-              onPress={() => Logout()}
-              source={images.logout}
-              style={Styles.headerRightImage}
-            />
-            <Text onPress={() => Logout()} style={{color:'white', fontSize:10, marginBottom:-3}}> Logout</Text>
-            </TouchableOpacity>
-             :
-            <TouchableOpacity
-            style={Styles.headerRightContainer}
-            onPress={() => navigation.navigate('Login')}>
-            <Image
-              onPress={() => navigation.navigate('Login')}
-              source={images.login}
-              style={Styles.headerRightImage}
-            />
-            <Text onPress={() => navigation.navigate('Login')} style={{color:'white', fontSize:10}}> Login</Text>
-          </TouchableOpacity>
-          }
-            </>
-          ),
-          headerTitle: (
-            <TouchableOpacity
-              style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-              <Text style={{color:'white', fontSize:21, fontWeight:"600"}}> Sports Social </Text>
-            </TouchableOpacity>
-          ),
+            <HeaderScreen navigation={navigation} />
+          ) ,
+       
           headerTitleStyle: {alignSelf: 'center'},
         })}
+        // options={({navigation}) => ({
+        //   headerStatusBarHeight: Platform.OS === 'android' ? androidStatusBar : iosStatusBar,
+        //   headerStyle: {
+        //     backgroundColor: colors.bottomBackGround,
+        //     shadowColor: colors.seperatorLineColor,
+        //     //marginTop:100,
+        //   },
+        //   headerLeft: () => (
+        //     <View onPress={() => navigation.navigate('PostCamera')}>
+        //       <TouchableOpacity
+        //         style={Styles.headerLeftContainer}
+        //         onPress={() => navigation.navigate('PostCamera')}>
+        //         <Image
+        //           onPress={() => navigation.navigate('PostCamera')}
+        //           source={images.add}
+        //           style={Styles.headerLeftImage}
+        //         />
+        //       </TouchableOpacity>
+        //     </View>
+        //   ),
+        //   headerRight: () => (
+        //     <>
+        //       { Auth ?
+        //       <TouchableOpacity
+        //       style={Styles.headerRightContainer}
+        //       onPress={() => Logout()}>
+        //       <Image
+        //       onPress={() => Logout()}
+        //       source={images.logout}
+        //       style={Styles.headerRightImage}
+        //     />
+        //     <Text onPress={() => Logout()} style={{color:'white', fontSize:10, marginBottom:-3}}> Logout</Text>
+        //     </TouchableOpacity>
+        //      :
+        //     <TouchableOpacity
+        //     style={Styles.headerRightContainer}
+        //     onPress={() => navigation.navigate('Login')}>
+        //     <Image
+        //       onPress={() => navigation.navigate('Login')}
+        //       source={images.login}
+        //       style={Styles.headerRightImage}
+        //     />
+        //     <Text onPress={() => navigation.navigate('Login')} style={{color:'white', fontSize:10}}> Login</Text>
+        //   </TouchableOpacity>
+        //   }
+        //     </>
+        //   ),
+        //   headerTitle: (
+        //     <TouchableOpacity
+        //       style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+        //       <Text style={{color:'white', fontSize:21, fontWeight:"600"}}> Sports Social </Text>
+        //     </TouchableOpacity>
+        //   ),
+        //   headerTitleStyle: {alignSelf: 'center'},
+        // })}
       />
       <Stack.Screen
         name="Comments"
         component={CommentScreen}
-        options={{
-          headerStatusBarHeight: Platform.OS === 'android' ? androidStatusBar : iosStatusBar,
-          gestureDirection: 'horizontal-inverted',
-          headerTintColor: '#fff',
-          headerStyle:{
-            backgroundColor:'black',
-          },
-          headerTitle: (
-            <TouchableOpacity
-              style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-              <Text style={{color:'white', fontSize:21, fontWeight:"600"}}> Comments </Text>
-            </TouchableOpacity>
-          ),
-          headerTitleStyle: {alignSelf: 'center'},
-        }} 
         />
-      <Stack.Screen
-        name="PostCamera"
-        component={PostCamera}
-        options={{
-          headerTintColor: '#fff',
-          headerStatusBarHeight: Platform.OS === 'android' ? androidStatusBar : iosStatusBar, 
-          gestureDirection: 'horizontal-inverted'
-        }}
-      />
       <Stack.Screen
         name="Loading"
         component={LoadingScreen}
@@ -157,10 +158,3 @@ export default function ({navigation}) {
     </Stack.Navigator>
   );
 }
-
-const Styles = StyleSheet.create({
-  headerLeftContainer: palette.header.headerLeftContainer,
-  headerLeftImage: palette.header.headerLeftImage,
-  headerRightContainer: palette.header.headerRightContainer,
-  headerRightImage: palette.header.headerRightImage,
-});

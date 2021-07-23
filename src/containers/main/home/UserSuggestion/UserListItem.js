@@ -4,50 +4,45 @@ import {View, Image, Text, TouchableOpacity, StyleSheet} from 'react-native';
 export default function UserListItem({item}) {
   return (
 
-  <View>
+  
     <View style={Styles.container}>
-
        <TouchableOpacity > 
-         <View style={{height:90,alignItems:'center'}}>
-          <Image
+         <View style={{alignItems:'center',marginTop:15}}>
+           <Image
               source={{uri: item.src}}
-              style={{width: 75, height: 60, borderRadius: 0}}
+              style={{width: 125, height: 125, borderRadius:15}}
             />
              <Text style={Styles.userText}> {item.key} </Text>
+             <Text style={{color:'#666666',justifyContent:'center',alignSelf:'center'}}> 10 mutual friends </Text>
+         </View>
+          <View style={{alignItems:'center', borderWidth:1,borderColor:"gray", borderRadius:15,marginBottom:20,marginTop:10}}>
+            <Text style={Styles.follow}>Follow </Text>
           </View>
-          <View style={{alignItems:'center'}}>
-              <Text style={Styles.follow}>Follow </Text>
-          </View>
-
-      </TouchableOpacity>
+       </TouchableOpacity>
     </View>
-    <View style={{backgroundColor: 'gray', height: 4,flex:1,marginTop:5, }} />
-          <View style={{margin:10}}></View>
-    </View>
+  
   );
 }
 
 const Styles = StyleSheet.create({
   container: {
     flexDirection: 'column',
-    width:75,
-    marginStart: 10,
-    marginEnd: 5,
-    marginTop:5,
-    marginBottom: 0,
+    marginStart:15,
+    marginRight:10,
     alignItems: 'center',
   },
   userText: {
-    color: 'white',
-    fontSize: 10,
+    color: '#000',
+    fontSize: 16,
     marginTop: 5,
-    width:75,
-    alignItems:'center'
+    // width:120,
+    fontWeight:'bold',
+    justifyContent:'center',
+    alignSelf:'center',
   },
   follow: {
-    color: '#3385ff',
-    fontSize: 10,
-    marginTop: 5,
-    textDecorationLine: 'underline',
+    color: 'gray',
+    fontSize: 12,
+    margin:5   
   },
 });

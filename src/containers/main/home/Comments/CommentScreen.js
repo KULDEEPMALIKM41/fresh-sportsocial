@@ -1,63 +1,80 @@
 import React, {useState} from 'react';
-import {View,Alert,Text,TextInput,ScrollView,
+import {View,Alert,Text,FlatList,ScrollView,
         Image,StyleSheet,TouchableOpacity, KeyboardAvoidingView,
-        TouchableWithoutFeedback,
-        Keyboard,} from 'react-native';
+        Dimensions,
+        Keyboard, StatusBar} from 'react-native';
+import { TextInput } from 'react-native-gesture-handler';
 import images from '../../../../res/images';
 
-export default function CommentScreen() {
+export default function CommentScreen({navigation}) {
+    const androidStatusBar = 0;
+    const iosStatusBar = StatusBar.currentHeight + 50;
+    const screenHeight = Dimensions.get('window').height;
+    const screenWidth = Dimensions.get('window').width;
+    let flatList = null
     const initComments = [
-      {
+      { 
+        id:1,
          name: 'Ben',
          comment:"You are to goods hi i am jorge.",
          src: 'https://picsum.photos/300',
       },
       {
+        id:2,
          name: 'Susan',
          comment:"You are goods",
          src: 'https://picsum.photos/600',
       },
       {
+        id:3,
          name: 'Robert',
          comment:"You are very good",
          src: 'https://picsum.photos/200',
       },
       {
+        id:4,
          name: 'Mary',
          comment:"You are good",
          src: 'https://picsum.photos/600',
       },
       {
+        id:5,
        name: 'Robert',
        comment:"You are very good",
        src: 'https://picsum.photos/200',
     },
     {
+      id:6,
        name: 'Mary',
        comment:"You are good",
        src: 'https://picsum.photos/600',
     },
     {
+      id:7,
        name: 'Mary',
        comment:"You are good",
        src: 'https://picsum.photos/600',
     },
     {
+      id:8,
        name: 'Mary',
        comment:"You are good",
        src: 'https://picsum.photos/600',
     },
     {
+      id:9,
        name: 'Mary',
        comment:"You are good",
        src: 'https://picsum.photos/600',
     },
     {
+      id:10,
        name: 'Mary',
        comment:"You are good",
        src: 'https://picsum.photos/600',
     },
     {
+      id:11,
        name: 'Mary',
        comment:"You are good",
        src: 'https://picsum.photos/600',
@@ -68,261 +85,146 @@ export default function CommentScreen() {
   const [comments, setComments] = useState(initComments)
   const [commentText, setCommentText] = useState('')
 
+  React.useLayoutEffect(() => {
+    navigation.setOptions({
+      headerTransparent: false,
+      headerStatusBarHeight: Platform.OS === 'android' ? androidStatusBar : iosStatusBar,
+      headerStyle: {
+        backgroundColor: '#5365A2'
+      },
+      headerTitle: () => (
+        <View style={{flexShrink: 1, width:200, marginStart:Platform.OS === 'ios' ? -50 : 0}}>
+            <Text style={styles.headerTitleStyle}>
+              Comments
+            </Text>
+        </View>
+      ),
+      headerLeft: () => (
+        <TouchableOpacity style={styles.commentBackButton} onPress={()=> navigation.goBack()}>
+            <Image onPress={()=> navigation.goBack()} source={images.backButton}  style={{width:12, height:12}} />
+        </TouchableOpacity>
+      ),
+    });
+  }, [navigation]);
+
 
  const postComment = () => {
-   console.log(commentText)
-   if (commentText != ''){
-    let lastCommentText = commentText
-    let lastComments = comments
-    lastComments.push({
-      name: 'Mary',
-      comment:lastCommentText,
-      src: 'https://picsum.photos/600',
-   })
-   console.log(lastComments)
-    setComments(lastComments)
-    setCommentText('')
-    
-   }
-};
+    console.log(commentText)
+    if (commentText != ''){
+      let lastCommentText = commentText
+      let lastComments = comments
+      lastComments.push({
+        id:Math.random(),
+        name: 'Mary',
+        comment:lastCommentText,
+        src: 'https://picsum.photos/600',
+    })
+      setComments(...[lastComments])
+      setCommentText('')
+    }
+  flatList.scrollToEnd({animated: true})
+  };
 
-const simpleAlertHandler = () => {
- //function to make simple alert
- Alert.alert('Coming soon !');
-};
-
- function tapToLike(likeIcon) {
-  if (likeIcon % 2 === 0) {
-    return images.redHeart;
-  } else {
-    return images.like;
-  }
-}
-const [likeIcon, setLikeIcon] = React.useState(1);
-
-return (
-  <KeyboardAvoidingView  behavior={Platform.OS === "ios" ? "padding" : null} keyboardVerticalOffset={100}> 
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-  <View style={styles.container}>
-  <ScrollView>
-  <View style={styles.welcome2}>
-    
-{
-  comments.map((item, index) => (
-    
-   <View key={index}>
-   <View
-       
-        style = {styles.container}
-       >
-  <TouchableOpacity onPress={simpleAlertHandler}>
-     <Image
-           source={{uri: item.src}}
-        style={styles.personImage}
-        onPress={simpleAlertHandler}
-      />
-      </TouchableOpacity>
-        <Text style = {styles.text}  onPress={simpleAlertHandler} >
-           {item.name}
-        </Text>
-        <Text  multiline={true}  style = {styles.text1}>
-           {item.comment}
-        </Text>
-       </View>
-       <View   style = {styles.container2}>
-       <Text style = {styles.textfieldbutton} >
-      16h
-          </Text>
-          
-          <TouchableOpacity onPress={simpleAlertHandler}>
-          <Text style = {styles.textfieldbutton} >
-        24 Like
-          </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity onPress={simpleAlertHandler}>
-          <Text style = {styles.textfieldbutton} >
-      Reply
-          </Text>
-          </TouchableOpacity>
-
-      <View style={{position: 'absolute', right: 20,marginTop:-8}}>
-        <TouchableOpacity onPress={() => setLikeIcon(likeIcon + 1)} >
-          <Image source={tapToLike(likeIcon)} style={styles.actionIconsLike} />
-        </TouchableOpacity>
-      </View>   
+  return (
+    <>
+      <View style={{flex:1, backgroundColor:"#fff"}}>
+        <View style={{flex:1, marginBottom:10}}>
+          <FlatList
+            ref={ref => flatList = ref}
+            onLayout={() => flatList.scrollToEnd({animated: true})}
+            indicatorStyle={'white'}
+            data={comments} 
+            renderItem={({item}) => (
+              <View style = {styles.pageComments} >
+                <View style={{alignItems:'center', justifyContent:'flex-start', flex:1}}>
+                  <Image
+                  source={{uri: 'https://picsum.photos/id/1025/4951/3301'}}
+                  style={styles.personImage}
+                  />
+                </View>
+                <View style={{flex:5}}>
+                  <View style={{backgroundColor:'#d6d9dc59', alignSelf: 'flex-start', paddingBottom:8, paddingTop:3, paddingHorizontal:10, borderRadius:15}}>
+                    <View style={{alignItems:'flex-start', justifyContent:'flex-start'}}>
+                      <Text style={styles.textStyle}>
+                          {item.name}
+                      </Text>
+                    </View>
+                    <View style={{alignItems:'flex-start', justifyContent:'flex-start'}}>
+                        <Text style={{fontSize:16}}>
+                        {item.comment}
+                        </Text>
+                    </View>
+                  </View>
+                </View>
+              </View>
+              )}
+            keyExtractor={(item) => item.id.toString()}
+          />
         </View>
-     </View>
-   
-  ))
-  
-}
-
-  </View>
-  </ScrollView>
-  <View style={styles.welcome3}>
-
-  <View> 
-        <Image
-         style={styles.personImageT}
-          source={{uri: 'https://picsum.photos/id/1025/4951/3301'}}
-         
-        />
+        <View style={{flexDirection:'row', marginHorizontal:15}}>
+          <View style={{flex:7}}>
+            <TextInput
+              style={styles.InputContainer}
+              multiline={true}
+              placeholderTextColor={'lightgray'}
+              value={commentText}
+              onChangeText={text=> setCommentText(text)}
+              placeholder="Write a comment... "
+            />
+          </View>
+          <View style={{flex:1, justifyContent:'center', alignItems:'flex-end'}}>
+            <TouchableOpacity onPress={postComment}>
+              <Image
+                style={{height:35, width:35}}
+                source={images.bookmark}
+              />
+            </TouchableOpacity>
+          </View>
         </View>
-    
-    <View>
-      <TextInput  multiline={true}
-      style={{color:"#fff",width:250 }}
-        placeholderTextColor={'white'}
-        value={commentText}
-        onChangeText={text=> setCommentText(text)}
-         placeholder="add a comment... " />
-       
-    </View>
-
-
-    <View style={{position: 'absolute', right: 10}}>
-
-    <TouchableOpacity
-         style={styles.button}
-         onPress={postComment}
-       >
-         <Text style={{color:'#0066ff'}}> Post </Text>
-      </TouchableOpacity>
-
-   
-    </View>
-  </View>
-</View>
-</TouchableWithoutFeedback>
-</KeyboardAvoidingView>
- 
- 
-  );
+      </View>
+    </>
+  )
 }
-
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: 'black',
-    // height:50,
+  headerTitleStyle:{
+    color: 'white',
+    fontSize: 19,
+    letterSpacing:1,
+    textAlign:'left',
+    fontFamily:"BigShouldersText-Black"
   },
-  welcome: {
-    height:50,
-    backgroundColor: 'black',
+    commentBackButton:{
+    backgroundColor:'rgba(1,41,50, 0.5)',
+    padding:6,
+    borderRadius:15,
+    height:25,
+    width:25,
+    marginHorizontal:10
+  },
+  pageComments:{
     flexDirection: 'row',
-   
-   
+    // height:60,
+    marginTop:10,
+    marginHorizontal:10
   },
-  welcome2: {
-    width:'100%',
-    maxHeight:'100%',
-    backgroundColor: 'black',
-   
-    fontSize: 20,
-    paddingTop: 0,
+  textStyle:{
+    color: 'black',
+    fontSize:18,
+    fontFamily:"BigShouldersText-Black",
+    letterSpacing:.6
   },
-  welcome3: {
-    position:"absolute",
-    flex:1,
-    bottom:0,
-    backgroundColor: '#1a1a1a',
-    width:'100%',
-    textAlign: 'center',
-    fontSize: 20,
-    height:50,
-    flexDirection: 'row',
-   
-  },
-  button: {
-    alignItems: 'center',
-    padding: 10,
-    paddingTop:15,
-  },
-
-  actionIcons: {
-    width: 15,
-    height: 15,
-    margin: 20,
-  },
-  actionIconsLike: {
-    width: 13,
-    height: 13,
-    
-  
-  },
-
   personImage: {
-   
-    width: 40,
-    height: 40,
+    width: 50,
+    height: 50,
     borderRadius: 30,
-    margin:10,
-    marginTop:25,
   },
-   
-  personImageT: {
-   
-    width: 40,
-    height: 40,
-    borderRadius: 30,
-    margin:5,
-  
+  InputContainer: {
+    borderColor:'lightgray',
+    borderWidth:1,
+    marginBottom:5,
+    borderRadius:25,
+    paddingStart:20,
   },
-  container: {
-    flexDirection: 'row',
-    paddingBottom:0,
-    
-    backgroundColor: 'black',
-    alignItems: 'center',
- },
- text: {
-   paddingLeft:5,
-   
-    color: 'lightblue',
-   
-    
- },
- text1: {
-  paddingLeft:5,
-  
-   color: '#fff',
-  
-   
-},
- textfieldbutton: {
-  paddingLeft:10,
-  marginTop:-10,
-  color: 'gray',
-  fontSize:12,
-  fontWeight:'bold',
-},  
-  container2: {
-    paddingLeft:55,
-    flexDirection: 'row',
-    paddingBottom:0,
-    marginTop:-10,
-    backgroundColor: 'black',
-  },
-  bottomView: {
-    position: 'absolute',
- 
-  left: 0,
-  right: 0,
-  bottom: 0,
-  backgroundColor:'gray',
-  flexDirection:'row',
-  height:50,
-  alignItems:'center',
-  },
- 
-   textStyle: {
-    
-      color: '#fff',
-      fontSize: 20,
-      paddingLeft: 15,
-      paddingTop:12,
-      fontWeight:'bold'
-   },
-});
+})
+

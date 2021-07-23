@@ -12,6 +12,7 @@ export default function Post({post, navigation}) {
     <React.Fragment>
       <PostHeader post={post} navigation={navigation}/>
       <PostActions post={post} navigation={navigation}/>
+      {/* <PostActions post={post} navigation={navigation} setModalVisible={setModalVisible}/> */}
       {/* <PostImage post={post} />
     
       <PostLikes post={post} />

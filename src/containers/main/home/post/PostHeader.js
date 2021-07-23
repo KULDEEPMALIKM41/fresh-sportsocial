@@ -1,84 +1,101 @@
 import React from 'react';
-import {Text, TouchableOpacity, View, StyleSheet, Image} from 'react-native';
-// import images from '../../../../res/images';
+import {Text, TouchableOpacity, View, StyleSheet, Image, Button} from 'react-native';
 import colors from '../../../../res/colors';
-// import PostImage from './PostImage';
+import Icon from 'react-native-vector-icons/FontAwesome5';
+import images from '../../../../res/images';
+
+import {
+  Menu,
+  MenuOptions,
+  MenuOption,
+  MenuTrigger,
+} from 'react-native-popup-menu';
 
 export default function PostHeader({post}) {
   return (
     <View style={Styles.container}>
       <View style={Styles.nameContainer}>
+        <View style={{flexDirection:"column"}}>
         <Image
           source={{uri: 'https://picsum.photos/id/1025/4951/3301'}}
-          style={Styles.personImage}
-        />
-        <View  style={{flexDirection: 'row', justifyContent: 'flex-start',paddingBottom:10}}>
-          {/* <Text style={Styles.personName}>Your Friends </Text>
-          <Text style={Styles.TextboxU}>JackVagabond </Text>
-          <Text style={Styles.personNames}>selected </Text>
-          <Text style={Styles.TextboxU}>Market Name</Text> */}
-          <Text style={Styles.TextboxU}>{' ' + post.first_name + ' ' + post.last_name + ' '}</Text>
-          <Text style={Styles.personNames}>created a post. </Text>
+          style={Styles.personImage} />
+        </View>  
+        <View style={{flexDirection:"column",marginLeft:10}}>
+          <View style={{ justifyContent:'center'}}>
+            <Text style={Styles.TextboxU}>{' ' + post.first_name + ' ' + post.last_name + ' '.toUpperCase()}</Text>
+            <View style={{flexDirection:"row", justifyContent:'center',alignItems:'center'}}>
+            <Icon name="clock" size={20} color="lightgray"/>
+            <Text style={Styles.placeName} > {post.created_date} </Text>
+            </View>
+          </View>
+        </View>
+        <View  style={{right:10,position:'absolute', justifyContent:'center'}}>
+          <Menu>
+          <MenuTrigger>
+            <Image source={images.dot}  style={{width:5,height:5,marginBottom:2}}/>
+            <Image source={images.dot}  style={{width:5,height:5,marginBottom:2}}/>
+            <Image source={images.dot}  style={{width:5,height:5,marginBottom:2}}/>
+          </MenuTrigger>
+          <MenuOptions optionsContainerStyle={{width:100,height:80,borderRadius:10,borderColor:'#E8E8E8',borderWidth:1}} >
+            <MenuOption  onSelect={() => alert(`Unfollow`)}>  
+              <Text style={{color: 'gray',fontSize:15,letterSpacing:0.5,marginLeft:10,fontFamily:"BigShouldersText-Black"}}>Unfollow</Text>
+            </MenuOption>
+            <MenuOption>
+              <View style={{height:1,backgroundColor:'lightgray'}}>
+              </View>
+            </MenuOption>
+            <MenuOption onSelect={() => alert(`Share`)} >
+              <Text style={{color: 'gray',fontSize:15,letterSpacing:0.5,marginLeft:10,fontFamily:"BigShouldersText-Black",marginTop:-5}}>Share</Text>
+            </MenuOption>
+          </MenuOptions>
+         </Menu>
         </View>
       </View>
-      <Text style={Styles.placeName} > {post.created_date} </Text>
-      
-      {/* <View>
-        
-        <TouchableOpacity>
-          <Image source={images.more} style={Styles.iconMore} />
-        </TouchableOpacity>
-      </View> */}
     </View>
   );
 }
 
 const Styles = StyleSheet.create({
   container: {
-    backgroundColor: colors.background,
-    // flexDirection: 'row',
-    // justifyContent: 'space-between',
-    marginTop: 0,
-    // marginBottom: 6,
-    marginStart: 10,
-    // marginEnd: 0,
-    // alignItems: 'center',
+    backgroundColor: "#fff",
+    flex:1,
   },
   nameContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'flex-start',
+    margin:10
   },
   personImage: {
-    width: 30,
-    height: 30,
-    borderRadius: 0,
+    width: 50,
+    height: 50,
+    borderRadius: 15,
+    marginLeft:10,  
   },
   personName: {
     color: colors.text,
     marginStart: 10,
+   
     fontSize:12,
-    // fontWeight: 'bold',
-  },
-  personNames: {
-    color: colors.text,
- 
-    fontSize:12,
-    // fontWeight: 'bold',
+    fontWeight: 'bold',
   },
   placeName: {
-    color: colors.text,
-    marginStart: 40,
-    marginTop:-10,
-    fontSize:12,
+    color: "lightgray",
+    marginStart:5,
+    fontSize:14,
+    fontFamily:"BigShouldersText-Black"
   },
   iconMore: {
     height: 15,
     width: 15,
   },
   TextboxU: {
-    textDecorationLine: 'underline',
-    color: '#3385ff',
+    color: '#000',
+    fontSize:18,
+    fontFamily:"BigShouldersText-Black",
+    marginBottom:5,
+    textTransform: 'capitalize',
+    letterSpacing:0.3
   },
   activityIndicator: {
     position: 'absolute',
