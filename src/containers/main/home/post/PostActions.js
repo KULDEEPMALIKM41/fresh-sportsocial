@@ -5,14 +5,9 @@ import { max } from 'react-native-reanimated';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import AutoHeightImage from 'react-native-auto-height-image';
 import PostVideos from './PostVideos'
+import { createLike } from '../../../../services/auth_curd';
+import AsyncStorage from '@react-native-community/async-storage';
 
-function tapToLike(likeIcon) {
-  if (likeIcon % 2 === 0) {
-    return images.redHeart;
-  } else {
-    return images.like;
-  }
-}
 function tapToBookmark(bookmarkIcon) {
   if (bookmarkIcon % 2 === 0) {
     return images.bookmarkWhite;
@@ -23,11 +18,42 @@ function tapToBookmark(bookmarkIcon) {
 
 
 export default function PostActions({post, navigation}) {
-  const [likeIcon, setLikeIcon] = React.useState(1);
+  const [likeIcon, setLikeIcon] = React.useState(0);
+  const [likeCount, setLikeCount] = React.useState(post.post_like.length);
+  const [commentCount, setCommentCount] = React.useState(post.posts_comment.length);
   const [bookmarkIcon, setBookmarkIcon] = React.useState(1);
   const [loading, setLoading] = useState(true);
   const windowWidth = Dimensions.get('window').width;
   const windowHeight = Dimensions.get('window').height;
+
+  const tapToLike = async (flage) => {
+    let value = await AsyncStorage.getItem('userData')
+      if (value){
+      saveLike(value);
+      if (flage) {
+        setLikeCount(likeCount + 1)
+        setLikeIcon(1)
+      } else {
+        setLikeCount(likeCount - 1)
+        setLikeIcon(0)
+      }
+    }else{
+      navigation.navigate('Login');
+    }
+  }
+
+  const saveLike = async (value) => {
+    if (value){
+      let token = JSON.parse(value).token
+      let data = {"post_id":post.id}
+      createLike(token, data).then((response) => { 
+        console.log('action done')
+      }, (error) => { 
+        Alert.alert('', JSON.stringify(error.response))
+      });
+    }
+  }
+
 
   return (
     <View style={Styles.container}>
@@ -68,16 +94,19 @@ export default function PostActions({post, navigation}) {
         : null
       }
       <View style={{flexDirection:'row',marginBottom:10}}>
-      <Text  style={Styles.L1Textbox}>250 Likes </Text>
-      <Text  style={Styles.C1Textbox}>364 Comments </Text>
+      <Text  style={Styles.L1Textbox}>{likeCount} Likes </Text>
+      <Text  style={Styles.C1Textbox}>{commentCount} Comments </Text>
       </View>
      <View style={{backgroundColor: '#b3b3b3', height: 1 }} />
       <View style={{flexDirection: 'row', justifyContent: 'flex-start', marginTop:10,marginBottom:10}}>
-        <TouchableOpacity onPress={() => setLikeIcon(likeIcon + 1)}>
-          <Image source={tapToLike(likeIcon)} style={Styles.actionIcons} />  
+        <TouchableOpacity onPress={() => tapToLike(!likeIcon)}>
+          {likeIcon ? 
+            <Image source={images.redHeart} style={Styles.actionIcons} /> :
+            <Image source={images.like} style={Styles.actionIcons} /> 
+          }
         </TouchableOpacity>
         {/* <TouchableOpacity onPress={() => setModalVisible(true)}> */}
-        <TouchableOpacity onPress={() => navigation.navigate('Comments')}>
+        <TouchableOpacity onPress={() => navigation.navigate('Comments', {post, setCommentCount})}>
         <Icon name="comment-dots" size={27} color="#b3b3b3" style={Styles.actionIcons}/>
         </TouchableOpacity>
         <TouchableOpacity >

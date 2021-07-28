@@ -16,6 +16,7 @@ export const GET_ODDS_URL = BASEURL.concat("api/matche/odds/");
 export const CREATE_BET_URL = BASEURL.concat("api/admin/bet/create");
 export const GET_BETSLIPS_URL = BASEURL.concat("api/admin/bet-slips");
 export const GET_BALANCE_URL = BASEURL.concat("api/admin/user_balance");
+export const POST_LIKE_URL = BASEURL.concat("api/admin/likepost");
 
 
 export function login(data) {
@@ -78,6 +79,9 @@ export function getBetslips(access){
 }
 
 export function getBalance(access){
-  console.log("get balance url",access);
   return axios.get(GET_BALANCE_URL,{ headers: { Authorization: 'Bearer '.concat(access)}});
+}
+
+export function createLike(access, data){
+  return axios.post(POST_LIKE_URL, data, { headers: { Authorization: 'Bearer '.concat(access)}});
 }

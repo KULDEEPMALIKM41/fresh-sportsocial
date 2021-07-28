@@ -2,88 +2,24 @@ import React, {useState} from 'react';
 import {View,Alert,Text,FlatList,ScrollView,
         Image,StyleSheet,TouchableOpacity, KeyboardAvoidingView,
         Dimensions,
-        Keyboard, StatusBar} from 'react-native';
+        LogBox, StatusBar} from 'react-native';
 import { TextInput } from 'react-native-gesture-handler';
 import images from '../../../../res/images';
+LogBox.ignoreLogs([
+  'Non-serializable values were found in the navigation state',
+]);
 
-export default function CommentScreen({navigation}) {
+export default function CommentScreen({navigation, route}) {
+    const post = route.params.post
+    const setCommentCount = route.params.setCommentCount
     const androidStatusBar = 0;
     const iosStatusBar = StatusBar.currentHeight + 50;
     const screenHeight = Dimensions.get('window').height;
     const screenWidth = Dimensions.get('window').width;
     let flatList = null
-    const initComments = [
-      { 
-        id:1,
-         name: 'Ben',
-         comment:"You are to goods hi i am jorge.",
-         src: 'https://picsum.photos/300',
-      },
-      {
-        id:2,
-         name: 'Susan',
-         comment:"You are goods",
-         src: 'https://picsum.photos/600',
-      },
-      {
-        id:3,
-         name: 'Robert',
-         comment:"You are very good",
-         src: 'https://picsum.photos/200',
-      },
-      {
-        id:4,
-         name: 'Mary',
-         comment:"You are good",
-         src: 'https://picsum.photos/600',
-      },
-      {
-        id:5,
-       name: 'Robert',
-       comment:"You are very good",
-       src: 'https://picsum.photos/200',
-    },
-    {
-      id:6,
-       name: 'Mary',
-       comment:"You are good",
-       src: 'https://picsum.photos/600',
-    },
-    {
-      id:7,
-       name: 'Mary',
-       comment:"You are good",
-       src: 'https://picsum.photos/600',
-    },
-    {
-      id:8,
-       name: 'Mary',
-       comment:"You are good",
-       src: 'https://picsum.photos/600',
-    },
-    {
-      id:9,
-       name: 'Mary',
-       comment:"You are good",
-       src: 'https://picsum.photos/600',
-    },
-    {
-      id:10,
-       name: 'Mary',
-       comment:"You are good",
-       src: 'https://picsum.photos/600',
-    },
-    {
-      id:11,
-       name: 'Mary',
-       comment:"You are good",
-       src: 'https://picsum.photos/600',
-    }
-      
-   ]
-
-  const [comments, setComments] = useState(initComments)
-  const [commentText, setCommentText] = useState('')
+    const initComments = post.posts_comment
+    const [comments, setComments] = useState(initComments)
+    const [commentText, setCommentText] = useState('')
 
   React.useLayoutEffect(() => {
     navigation.setOptions({
@@ -109,18 +45,24 @@ export default function CommentScreen({navigation}) {
 
 
  const postComment = () => {
-    console.log(commentText)
     if (commentText != ''){
       let lastCommentText = commentText
       let lastComments = comments
-      lastComments.push({
+      post.posts_comment.push({
         id:Math.random(),
         name: 'Mary',
         comment:lastCommentText,
         src: 'https://picsum.photos/600',
-    })
-      setComments(...[lastComments])
-      setCommentText('')
+      })
+      // lastComments.push({
+      //   id:Math.random(),
+      //   name: 'Mary',
+      //   comment:lastCommentText,
+      //   src: 'https://picsum.photos/600',
+      // })
+      // setCommentCount(lastComments.length )
+      // setComments(...[lastComments])
+      // setCommentText('')
     }
   flatList.scrollToEnd({animated: true})
   };
