@@ -13,6 +13,7 @@ export default function HeaderScreen ({navigation}) {
         let value = await AsyncStorage.getItem('userData');
         if (value){
           value = JSON.parse(value).token
+          console.log(value);
           setToken(value);
           getBalanceData(value);
         }else{

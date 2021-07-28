@@ -80,7 +80,7 @@ export default function homeScreen({navigation}) {
   const getPostData = async () => {
       getPost(page, 'token').then((response) => {
         console.log('page--------------------------', page)
-        let data = response.data.data.data.data;
+        let data = response.data.data.data;
         if (data.length){
           data.push({"id": page*1000, users:users});
           setData(oldArray => [...oldArray, ...data]);
