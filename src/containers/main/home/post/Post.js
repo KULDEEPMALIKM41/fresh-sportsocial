@@ -13,7 +13,7 @@ export default function Post({post, navigation}) {
   return (
     <React.Fragment>
       {
-        post.bet_id ? 
+        post.bet_status ? 
         <View style={{marginTop:20}}>
           <BetHeader post={post} navigation={navigation}/>
           <BetContent post={post} navigation={navigation}/>

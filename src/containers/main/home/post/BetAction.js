@@ -60,12 +60,13 @@ export default function BetActions({post, navigation}) {
         <TouchableOpacity >
           <Image source={images.bookmark} style={Styles.actionIcons} />
         </TouchableOpacity>
+        {post.bet_status == 'pending' ? 
         <TouchableOpacity onPress={() => navigation.navigate('HomePlacebet', {selected:[post]})}>
           <View style={{flexDirection:'row', justifyContent:'center', alignItems:'center', height:30, width:170, backgroundColor:'#5365A2', borderRadius:20, marginStart:50}}>
             <Image source={images.place_bet} style={{height:20, width:20}} />
             <Text style={{color:'white', fontSize:16, fontWeight:'bold'}}>   Place Bet</Text>
           </View>
-        </TouchableOpacity>
+        </TouchableOpacity> : null}
       </View>
     </View>
   );
