@@ -149,9 +149,17 @@ export default function AddPostScreen({navigation}) {
         );
       }
       
-      createPost(formData, token).then((response) => { 
+      createPost(formData, token).then(async (response) => { 
         setCommentText('')
         setUploading(false)
+        try {
+          await AsyncStorage.setItem(
+            'reload',
+            '1'
+          );
+        } catch (error) {
+          console.log(error)
+        }
         navigation.goBack()
       }, (error) => { 
         // setLoading(false)

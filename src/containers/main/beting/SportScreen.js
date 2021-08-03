@@ -1,6 +1,6 @@
  
 import React from 'react';
-import {ImageBackground, Dimensions, StyleSheet, Text, View, FlatList, Platform, StatusBar, TouchableOpacity, ActivityIndicator } from 'react-native';
+import {ImageBackground, Dimensions, StyleSheet, Image, Text, View, FlatList, Platform, StatusBar, TouchableOpacity, ActivityIndicator } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import images from '../../../res/images';
 import { getSports } from '../../../services/auth_curd';
@@ -13,16 +13,21 @@ export default function SportScreen({navigation}) {
     const androidStatusBar = 0;
     const iosStatusBar = StatusBar.currentHeight + 50;
     const [sports_data, setSports_data] = React.useState(sports)
-  
+    
     React.useLayoutEffect(() => {
       navigation.setOptions({
         title:'',
         headerStatusBarHeight: Platform.OS === 'android' ? androidStatusBar : iosStatusBar,
         headerTransparent: true,
         headerLeft: () => (
-          <Text style={styles.headerTitleStyle}>
-          Select Sports
-          </Text>
+          <View style={{flexDirection:'row'}}>
+            <TouchableOpacity style={styles.sportBackButton} onPress={()=> navigation.goBack()}>
+                <Image onPress={()=> navigation.goBack()} source={images.backButton}  style={{width:12, height:12}} />
+            </TouchableOpacity>
+            <Text style={styles.headerTitleStyle}>
+              Select Sports
+            </Text>
+          </View>
         ),
         headerRight: () => (
          <HeaderScreen navigation={navigation} />
@@ -128,6 +133,15 @@ const styles = StyleSheet.create({
     fontSize: 19,
     letterSpacing:1,
     left:15,
-    fontFamily:"BigShouldersText-Black"
+    fontFamily:"BigShouldersText-Black",
+    marginTop: Platform.OS === 'ios' ? 0 : -4
   },
+  sportBackButton:{
+    backgroundColor:'rgba(1,41,50, 0.5)',
+    padding:6,
+    borderRadius:15,
+    height:25,
+    width:25,
+    marginHorizontal:10
+  }
 });

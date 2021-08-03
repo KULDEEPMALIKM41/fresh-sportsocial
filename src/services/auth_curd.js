@@ -17,6 +17,7 @@ export const CREATE_BET_URL = BASEURL.concat("api/admin/bet/create");
 export const GET_BETSLIPS_URL = BASEURL.concat("api/admin/bet-slips");
 export const GET_BALANCE_URL = BASEURL.concat("api/admin/user_balance");
 export const POST_LIKE_URL = BASEURL.concat("api/admin/likepost");
+export const POST_COMMENT_URL = BASEURL.concat("api/admin/commentpost");
 
 
 export function login(data) {
@@ -47,8 +48,12 @@ export function getLocation() {
   return axios.get('https://extreme-ip-lookup.com/json/');
 }
 
-export function getPost(page, access){
-  return axios.get(GET_POST_URL+page,{ headers: { Authorization: 'Bearer '.concat(access) } } );
+export function getPost(page, user_id){
+  if (user_id){
+    return axios.get(GET_POST_URL+page+"&user_id="+user_id);
+  }else{
+    return axios.get(GET_POST_URL+page);
+  }
 }
 
 export function getSports(){
@@ -84,4 +89,8 @@ export function getBalance(access){
 
 export function createLike(access, data){
   return axios.post(POST_LIKE_URL, data, { headers: { Authorization: 'Bearer '.concat(access)}});
+}
+
+export function createComment(access, data){
+  return axios.post(POST_COMMENT_URL, data, { headers: { Authorization: 'Bearer '.concat(access)}});
 }

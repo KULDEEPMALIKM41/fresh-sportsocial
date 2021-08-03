@@ -5,6 +5,7 @@ import PostCamera from './PostCamera/PostCamera';
 import CommentScreen from './Comments/CommentScreen';
 import LoadingScreen from './Loading/LoadingScreen';
 import AddPostScreen from './AddPost/AddPostScreen';
+import PlacebetScreen from './PlaceBet/PlacebetScreen';
 import AsyncStorage from '@react-native-community/async-storage';
 import HeaderScreen from '../beting/HeaderScreen';
 
@@ -155,6 +156,10 @@ export default function ({navigation}) {
         name="AddPost"
         component={AddPostScreen}
         />
+      <Stack.Screen
+        name="HomePlacebet"
+        component={PlacebetScreen}
+      />
     </Stack.Navigator>
   );
 }

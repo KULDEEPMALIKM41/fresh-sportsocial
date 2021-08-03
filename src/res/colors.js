@@ -1,10 +1,10 @@
 const colors = {
   background: '#000',
-  bottomBackGround: '#121212',
+  bottomBackGround: 'white',
   text: 'white',
   textFaded2: '#999',
   textInputBackground: '#262626',
-  seperatorLineColor: '#1c1c1c',
+  seperatorLineColor: 'lightgray',
   loginInputBackground: '#121212',
 };
 
