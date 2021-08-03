@@ -67,10 +67,10 @@ export default function MarketScreen({navigation, route}) {
       console.log(token);
       let data = {bet_slips:{}};
       for (let bets of selected){
-        data.bet_slips[bets.id] = {
+        data.bet_slips[bets.odd_id] = {
           stake_value:bets.stake_value,
           value:bets.value,
-          id:bets.id
+          id:bets.odd_id
         }
       }
       if (pww){
