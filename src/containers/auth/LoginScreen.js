@@ -56,6 +56,10 @@ export default function LoginScreen({navigation}) {
             'userData',
             JSON.stringify(response.data.data)
           );
+          await AsyncStorage.setItem(
+            'reload',
+            '1'
+          );
         } catch (error) {
           console.log(error)
         }

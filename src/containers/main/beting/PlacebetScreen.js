@@ -22,6 +22,7 @@ const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
 export default function MarketScreen({navigation, route}) {
+  console.log(route.params.selected)
   const androidStatusBar = 0;
   const iosStatusBar = StatusBar.currentHeight + 50;
   const [selected, setSelected] = React.useState(route.params.selected);
@@ -59,7 +60,7 @@ export default function MarketScreen({navigation, route}) {
     });
   }, [navigation]);
 
-  const createBetData = async() => {
+  const createBetData = async(pww) => {
     if (checkValidation()){
       let value = await AsyncStorage.getItem('userData');
       let token = JSON.parse(value).token
@@ -72,12 +73,28 @@ export default function MarketScreen({navigation, route}) {
           id:bets.id
         }
       }
+      if (pww){
+        data.pww = pww
+      }
       console.log(data);
-      createBet(data, token).then((response) => {
+      createBet(data, token).then( async (response) => {
         console.log(response.data);
         Alert.alert('', response.data.message);
-        navigation.navigate("Sports")
-        navigation.navigate("MyBets")
+        if(pww){
+          try {
+            await AsyncStorage.setItem(
+              'reload',
+              '1'
+            );
+          } catch (error) {
+            console.log(error)
+          }
+          navigation.navigate("Sports")
+          navigation.navigate("Home")
+        }else{
+          navigation.navigate("Sports")
+          navigation.navigate("My Bets")
+        }
       }, (error) => { 
         Alert.alert('', 'error...')
         console.log(error.response);
@@ -245,93 +262,114 @@ export default function MarketScreen({navigation, route}) {
                 </View>
               )
             })}
-            <View style={{marginTop:25, marginBottom: 10, flexDirection: 'row',paddingLeft:10}}>
-            <Text style={styles.headText}>PARLAY</Text>
-            <Image
-              source={{
-                uri: 'https://freepngimg.com/thumb/web_design/51042-3-share-hd-free-clipart-hd-thumb.png',
-              }}
-              style={{margin: 5, width: 15, height: 15}}
-            />
+            {/* <View style={{marginTop:25, marginBottom: 10, flexDirection: 'row',paddingLeft:10}}>
+              <Text style={styles.headText}>PARLAY</Text>
+              <Image
+                source={{
+                  uri: 'https://freepngimg.com/thumb/web_design/51042-3-share-hd-free-clipart-hd-thumb.png',
+                }}
+                style={{margin: 5, width: 15, height: 15}}
+              />
+            </View> */}
+            {/* <View
+              style={{height:60, backgroundColor:'#fff', flexDirection: 'row',padding:10,margin:5}}>
+              <Text
+                style={{
+                  paddingLeft: 20,
+                  textAlign: 'left',
+                  alignSelf: 'center',
+                  fontSize: 16,
+                  color: '#666666',
+                  fontFamily:"BigShouldersText-Black",
+                  letterSpacing:.5,
+                }}>
+                Pot.Win
+              </Text>
+              <Text
+                style={{
+                  textAlign: 'left',
+                
+                  fontSize: 16,
+                  alignSelf: 'center',
+                  fontFamily:"BigShouldersText-Black",
+                  letterSpacing:.5,
+                }}>
+                {' '}
+                160 pts
+              </Text>
+              <View style={styles.Lcontainer}>
+                <RNPickerSelect
+                      placeholder={{
+                        label: 'Select Point',
+                        value: '',
+                      }}
+                      items={[{label:'10', value:'10'},{label:'20', value:'20'}]}
+                      // value={selectedValue}
+                      style={{
+                        inputIOS: {
+                          fontSize: 16,
+                          // top:3,
+                          alignSelf:'center',
+                          color: 'black',
+                        },
+                        inputAndroid: {
+                          fontSize: 16,
+                          margin:0,
+                          padding:0,
+                          color: 'black',
+                        },
+                      }}
+                      onValueChange={(itemValue, itemIndex) => {
+                        console.log(itemValue);
+                      }}
+                      useNativeAndroidPickerStyle={false}
+                    />
+              </View>
+            </View> */}
           </View>
-
-          <View
-            style={{height:60, backgroundColor:'#fff', flexDirection: 'row',padding:10,margin:5}}>
-            <Text
-              style={{
-                paddingLeft: 20,
-                textAlign: 'left',
-                alignSelf: 'center',
-                fontSize: 16,
-                color: '#666666',
-                fontFamily:"BigShouldersText-Black",
-                letterSpacing:.5,
-              }}>
-              Pot.Win
-            </Text>
-            <Text
-              style={{
-                textAlign: 'left',
-              
-                fontSize: 16,
-                alignSelf: 'center',
-                fontFamily:"BigShouldersText-Black",
-                letterSpacing:.5,
-              }}>
-              {' '}
-              160 pts
-            </Text>
-            <View style={styles.Lcontainer}>
-              <RNPickerSelect
-                    placeholder={{
-                      label: 'Select Point',
-                      value: '',
-                    }}
-                    items={[{label:'10', value:'10'},{label:'20', value:'20'}]}
-                    // value={selectedValue}
-                    style={{
-                      inputIOS: {
-                        fontSize: 16,
-                        // top:3,
-                        alignSelf:'center',
-                        color: 'black',
-                      },
-                      inputAndroid: {
-                        fontSize: 16,
-                        margin:0,
-                        padding:0,
-                        color: 'black',
-                      },
-                    }}
-                    onValueChange={(itemValue, itemIndex) => {
-                      console.log(itemValue);
-                    }}
-                    useNativeAndroidPickerStyle={false}
-                  />
-            </View>
-          </View>
-        </View>
       </ScrollView>
-      <TouchableOpacity
-        style={styles.buttonContainer}
-        onPress={() => createBetData()}>
-        <Text style={styles.buttomButton}>Publish Without Wagoring</Text>
-      </TouchableOpacity>
+      <View style={{flexDirection:'row'}}>
+        <TouchableOpacity
+          style={styles.publishButtonContainer}
+          onPress={() => createBetData(1)}>
+          <Text style={styles.publishButtomButton}>Publish Without Wagoring</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.buttonContainer}
+          onPress={() => createBetData()}>
+          <Text style={styles.buttomButton}>Place Bet</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   buttonContainer: {
+    flex:1,
     alignItems: 'center',
-    backgroundColor: '#5c5cd6',
+    backgroundColor: 'green',
     justifyContent: 'center',
-    paddingVertical:10
+    paddingVertical:10,
+    margin:5
   },
   buttomButton: {
     color: '#fff',
     fontFamily:"BigShouldersText-Black",
-    fontSize:20
+    fontSize:16
+  },
+  publishButtonContainer: {
+    flex:1,
+    alignItems: 'center',
+    backgroundColor: '#5c5cd6',
+    justifyContent: 'center',
+    paddingVertical:10,
+    margin:5
+  },
+  publishButtomButton: {
+    color: '#fff',
+    fontFamily:"BigShouldersText-Black",
+    fontSize:16
   },
   container: {
     flex: 1,

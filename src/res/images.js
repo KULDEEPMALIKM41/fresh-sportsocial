@@ -1,4 +1,10 @@
 const images = {
+  more_selected: require('./images/more_selected.png'),
+  mybets: require('./images/mybets.png'),
+  mybets_selected: require('./images/mybets_selected.png'),
+  place_bet: require('./images/place_bet.png'),
+  score: require('./images/score.png'),
+  score_selected: require('./images/score_selected.png'),
   sports_background: require('./images/sports-background.png'),
   notfound: require('./images/notfound.png'),
   login: require('./images/login.png'),
@@ -9,7 +15,6 @@ const images = {
   add: require('./images/add.png'),
   add_selected: require('./images/add_selected.png'),
   home: require('./images/home.png'),
-  home_selected: require('./images/home_selected.png'),
   profile: require('./images/profile.png'),
   profile_selected: require('./images/profile_selected.png'),
   search: require('./images/search.png'),

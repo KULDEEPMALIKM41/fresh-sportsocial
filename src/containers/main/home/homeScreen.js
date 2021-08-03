@@ -1,20 +1,18 @@
 import React, {useState} from 'react';
 import {SafeAreaView, Modal, Dimensions, FlatList, View, ActivityIndicator, TouchableOpacity, Text, StyleSheet, Image, Button, Touchable} from 'react-native';
 import Post from './post/Post';
-import colors from '../../../res/colors';
 import UserContainer from './UserSuggestion/UserContainer';
 import palette from '../../../res/palette';
 import {getPost} from '../../../services/auth_curd';
 import AsyncStorage from '@react-native-community/async-storage';
 import Icon from 'react-native-vector-icons/FontAwesome5';
-import LinearGradient from 'react-native-linear-gradient';
 import SportContainer from './SportsStory/SportContainer';
 import { getSports } from '../../../services/auth_curd';
-import GestureRecognizer from 'react-native-swipe-gestures';
+// import GestureRecognizer from 'react-native-swipe-gestures';
 import images from '../../../res/images';
-import CommentScreen from './Comments/CommentScreen'
-const screenHeight = Dimensions.get('window').height;
-const screenWidth = Dimensions.get('window').width;
+// import CommentScreen from './Comments/CommentScreen'
+// const screenHeight = Dimensions.get('window').height;
+// const screenWidth = Dimensions.get('window').width;
 
 export default function homeScreen({navigation}) {
   const users = [
@@ -61,9 +59,14 @@ export default function homeScreen({navigation}) {
 
   const checkAuth = async () => {
     let value = await AsyncStorage.getItem('userData');
+    let reload = await AsyncStorage.getItem('reload');
     if (value){
+      // console.log(value)
       value = JSON.parse(value).first_name + ' ' + JSON.parse(value).last_name;
       setName(value);
+      if(reload){
+        ReloadPage();
+      }
     }else{
       setName(null);
     }
@@ -77,8 +80,14 @@ export default function homeScreen({navigation}) {
       console.log(error.response);
      });
   }
-  const getPostData = async () => {
-      getPost(page, 'token').then((response) => {
+    const getPostData = async () => {
+      let user_id;
+      value = await AsyncStorage.getItem('userData');
+      if (value){
+        console.log(value)
+        user_id = JSON.parse(value).user_id;
+      }
+      getPost(page, user_id).then((response) => {
         console.log('page--------------------------', page)
         let data = response.data.data.data;
         if (data.length){
@@ -93,19 +102,23 @@ export default function homeScreen({navigation}) {
        });
   }
 
+  ReloadPage = async () =>{
+    await AsyncStorage.removeItem('reload')
+    setData(firstData);
+      setLoading(true);
+      if (page == 1){
+        getPostData();
+      }else{
+        setPage(1);
+      }
+  }
+
   React.useEffect(() => {
     checkAuth();
     getSportsData()
     getPostData();
     const unsubscribe = navigation.addListener('focus', (e) => {
       checkAuth();
-      // setData(firstData);
-      // setLoading(true);
-      // if (page == 1){
-      //   getPostData();
-      // }else{
-      //   setPage(1);
-      // }
   }
   );
   
@@ -141,7 +154,7 @@ export default function homeScreen({navigation}) {
       </GestureRecognizer> */}
       <FlatList
           ListHeaderComponent={() => (
-            <View style={{marginBottom:10,backgroundColor:'#5365A2'}}>
+            <View style={{backgroundColor:'#5365A2'}}>
               <View style={{height:50,flex:1,backgroundColor:'#5365A2'}}></View>
               <View style={{height:60,backgroundColor:'#E8E8E8'}}>
                 <View style={{flex:1}}>

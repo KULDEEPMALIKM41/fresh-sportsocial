@@ -5,6 +5,8 @@ import {View,Alert,Text,FlatList,ScrollView,
         LogBox, StatusBar} from 'react-native';
 import { TextInput } from 'react-native-gesture-handler';
 import images from '../../../../res/images';
+import { createComment } from '../../../../services/auth_curd';
+import AsyncStorage from '@react-native-community/async-storage';
 LogBox.ignoreLogs([
   'Non-serializable values were found in the navigation state',
 ]);
@@ -44,16 +46,32 @@ export default function CommentScreen({navigation, route}) {
   }, [navigation]);
 
 
- const postComment = () => {
+ const postComment = async() => {
     if (commentText != ''){
-      let lastCommentText = commentText
-      let lastComments = comments
-      post.posts_comment.push({
-        id:Math.random(),
-        name: 'Mary',
-        comment:lastCommentText,
-        src: 'https://picsum.photos/600',
-      })
+      let value = await AsyncStorage.getItem('userData')
+      if (value){
+        let token = JSON.parse(value).token
+        let data = {"post_id":post.id, comment:commentText};
+        setCommentText('')
+        createComment(token, data).then((response) => { 
+          console.log('action done', response.data.data);
+          setComments(...[response.data.data])
+          post.posts_comment = response.data.data
+          setCommentCount(post.posts_comment.length )
+          // flatList.scrollToStart({animated: true});
+        }, (error) => { 
+          Alert.alert('', JSON.stringify(error.response))
+        });
+
+      }
+      // let lastCommentText = commentText
+      // let lastComments = comments
+      // post.posts_comment.push({
+      //   id:Math.random(),
+      //   name: 'Mary',
+      //   comment:lastCommentText,
+      //   src: 'https://picsum.photos/600',
+      // })
       // lastComments.push({
       //   id:Math.random(),
       //   name: 'Mary',
@@ -64,7 +82,6 @@ export default function CommentScreen({navigation, route}) {
       // setComments(...[lastComments])
       // setCommentText('')
     }
-  flatList.scrollToEnd({animated: true})
   };
 
   return (
@@ -73,7 +90,7 @@ export default function CommentScreen({navigation, route}) {
         <View style={{flex:1, marginBottom:10}}>
           <FlatList
             ref={ref => flatList = ref}
-            onLayout={() => flatList.scrollToEnd({animated: true})}
+            // onLayout={() => flatList.scrollToStart({animated: true})}
             indicatorStyle={'white'}
             data={comments} 
             renderItem={({item}) => (
@@ -88,7 +105,7 @@ export default function CommentScreen({navigation, route}) {
                   <View style={{backgroundColor:'#d6d9dc59', alignSelf: 'flex-start', paddingBottom:8, paddingTop:3, paddingHorizontal:10, borderRadius:15}}>
                     <View style={{alignItems:'flex-start', justifyContent:'flex-start'}}>
                       <Text style={styles.textStyle}>
-                          {item.name}
+                          {item.first_name + ' ' + item.last_name}
                       </Text>
                     </View>
                     <View style={{alignItems:'flex-start', justifyContent:'flex-start'}}>
