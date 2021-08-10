@@ -9,6 +9,7 @@ import {
     TouchableWithoutFeedback,
     Keyboard,
     Alert,
+    Platform,
   } from 'react-native';
   import React, { useEffect } from 'react';
   import images from '../../res/images';
@@ -20,7 +21,7 @@ import {
   export default function SignupScreen({navigation}) {
     
     const [countryHeight, setCountryHeight] = React.useState(40);
-    const [countryMarginTop, setCountryMarginTop] = React.useState(19)
+    const [countryMarginTop, setCountryMarginTop] = React.useState(Platform.OS === 'android' ? 19 :  15)
     const [firstName, setFirstName] = React.useState('');
     const [lastName, setLastName] = React.useState('');
     const [phone, setPhone] = React.useState('');
@@ -161,11 +162,21 @@ import {
       }else if (name === 'phone'){
         setPhone(value);
         if (value.length > 0){
-          setCountryHeight(60);
-          setCountryMarginTop(3);
+          if (Platform.OS === 'android'){
+            setCountryHeight(60);
+            setCountryMarginTop(3);
+          }else{
+            setCountryHeight(50);
+            setCountryMarginTop(5);
+          }
         }else{
-          setCountryHeight(40);
-          setCountryMarginTop(19);
+          if (Platform.OS === 'android'){
+            setCountryHeight(40);
+            setCountryMarginTop(19);
+          }else{
+            setCountryHeight(40);
+            setCountryMarginTop(15);
+          }
         }
       }else if (name === 'email'){
         setEmail(value);

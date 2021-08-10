@@ -1,7 +1,7 @@
 import React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import images from '../../res/images';
-import {Image, View, Text} from 'react-native';
+import {Image, View, Text, Platform} from 'react-native';
 import palette from '../../res/palette';
 import colors from '../../res/colors';
 import homeNavigator from './home/homeNavigator';
@@ -21,7 +21,7 @@ export default function TabNavigator({navigation}) {
           style: {
             backgroundColor: colors.bottomBackGround,
             borderTopColor: colors.seperatorLineColor,
-            height:65,
+            height:Platform.OS === 'android' ? 65 : 93,
             overflow:'hidden'
           },
         }}

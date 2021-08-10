@@ -1,10 +1,12 @@
  
 import React from 'react';
-import {ImageBackground, StyleSheet, Text, View, FlatList, Image, TouchableOpacity, Platform, StatusBar, ActivityIndicator } from 'react-native';
+import {ImageBackground, Dimensions, StyleSheet, Text, View, FlatList, Image, TouchableOpacity, Platform, StatusBar, ActivityIndicator } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import images from '../../../res/images';
 import { getLeages } from '../../../services/auth_curd';
 import HeaderScreen from './HeaderScreen';
+
+const windowHeight = Dimensions.get('window').height;
 
 export default function LeagueScreen({navigation, route}) { 
     const item = route.params.item
@@ -108,7 +110,7 @@ const styles = StyleSheet.create({
     flex: 1,
     resizeMode: "cover",
     justifyContent: "center",
-    height:800
+    height:windowHeight
   },
   container: {
     flex: 1,
