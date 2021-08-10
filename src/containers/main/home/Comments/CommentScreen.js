@@ -63,6 +63,8 @@ export default function CommentScreen({navigation, route}) {
           Alert.alert('', JSON.stringify(error.response))
         });
 
+      }else{
+        navigation.navigate('Login');
       }
       // let lastCommentText = commentText
       // let lastComments = comments
@@ -184,6 +186,8 @@ const styles = StyleSheet.create({
     marginBottom:5,
     borderRadius:25,
     paddingStart:20,
+    paddingTop:14,
+    height:50,
   },
 })
 
